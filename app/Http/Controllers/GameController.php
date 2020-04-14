@@ -187,8 +187,8 @@ class GameController extends Controller
         $game->current_round = $round->id;
         if($game->number_of_rounds === null) {
             $game->number_of_rounds = 3;
-            $game->save();
         }
+        $game->save();
 
         event(new StartGame('start',$game->slug));
 
