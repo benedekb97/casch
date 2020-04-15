@@ -27,15 +27,16 @@ $(document).ready(function(){
             // Show white cards
             if(host_user_id == user_id) {
                 white_cards_html += `<h1 style="text-align:center;">Örülj, hogy csak online vagy koronás</h1>`;
+            }else{
+                e.cards.forEach(function(element){
+                    let card_text = JSON.parse(element.text).join("");
+                    if(host_user_id != user_id && $.inArray(user_id,e.players_played) === -1){
+                        white_cards_html += `<div class="col-xl-3" id="white-card-${element.id}"><a class="card-link" href="#" onclick="addAnswer(${element.id},'${card_text}')"><div class="card card-white"><div class="card-body">${card_text}<p></p></div></div></a></div>`;
+                    }else{
+                        white_cards_html += `<div class="col-xl-3"><div class="card card-white"><div class="card-body"><p>${card_text}</p></div></div></div>`;
+                    }
+                });
             }
-            e.cards.forEach(function(element){
-                let card_text = JSON.parse(element.text).join("");
-                if(host_user_id != user_id && $.inArray(user_id,e.players_played) === -1){
-                    white_cards_html += `<div class="col-xl-3" id="white-card-${element.id}"><a class="card-link" href="#" onclick="addAnswer(${element.id},'${card_text}')"><div class="card card-white"><div class="card-body">${card_text}<p></p></div></div></a></div>`;
-                }else{
-                    white_cards_html += `<div class="col-xl-3"><div class="card card-white"><div class="card-body"><p>${card_text}</p></div></div></div>`;
-                }
-            });
             white_cards_div.html(white_cards_html);
 
             // Show players

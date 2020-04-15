@@ -240,7 +240,7 @@ class GameController extends Controller
         $cards = Auth::user()->player()->cards;
         $black_card = $game->round->current_turn->card;
         $host = $game->round->current_turn->host->user->id;
-        $players = $game->users;
+        $players = $game->users->where('deleted_at',null)->all();
         $played = $game->round->current_turn->players_played;
         $play = Auth::user()->player()->plays->where('turn_id', $game->round->current_turn->id)->first();
 
@@ -359,7 +359,7 @@ class GameController extends Controller
             abort(403);
         }
 
-        $play->points = 10;
+        $play->points = $game->players()->count();
         $play->save();
 
         $game->round->current_turn->winning_play_id = $play->id;
@@ -394,9 +394,13 @@ class GameController extends Controller
         if(Auth::user()->game() === null || Auth::user()->game()->id !== $game->id) {
             return response()->json(['success' => false]);
         }
+        if(Auth::user()->player()->ready) {
+            return response()->json(['success' => false]);
+        }
 
         Auth::user()->player()->ready = true;
         Auth::user()->player()->save();
+
 
         event(new PlayerReady(Auth::id(), $game->slug));
 
@@ -443,7 +447,7 @@ class GameController extends Controller
             $plays = Play::withTrashed()->where('player_id', $player->id)->get();
             $player_points = 0;
             foreach($plays as $play) {
-                $player_points += $play->points;
+                $player_points += $play->points + $play->likes;
             }
             $points[$player->id] = [
                 'name' => $player->user->name,

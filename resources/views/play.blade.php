@@ -17,7 +17,7 @@
     <div class="row">
         <div class="col-md-4">
             <div class="card" style="margin-bottom:15px;">
-                <div class="card-header">Kör: {{ $game->round->number }}/{{ $game->number_of_rounds }}</div>
+                <div class="card-header">Kör: {{ $game->round->number }}/{{ $game->number_of_rounds }}<br>Játék: {{ $game->round->turns()->count() }}/{{ $game->players()->count() }}</div>
                 <div class="card-body" id="players"></div>
             </div>
             <div class="card" id="submit-button" style="display:none; margin-bottom:15px;">

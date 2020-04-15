@@ -35,16 +35,10 @@
                         <div class="card-body" @if($turn->winning_play->player->user->id == Auth::id()) style="background-color:rgba(255,255,255,0.2);" @endif>
                             <h5 class="card-title">
                                 @foreach(json_decode($black_card->text) as $key => $black_piece)
-                                    {{ $black_piece }} <span class="white-text">@if(isset($turn->winning_play->cards()->get()->toArray()[$key])) {{ implode('',json_decode($turn->winning_play->cards()->get()->toArray()[$key]['text'])) }} @endif</span>
+                                    {{ $black_piece }} <span class="white-text">@if(isset($turn->winning_play->cards()->get()->toArray()[$key])){{ implode('',json_decode($turn->winning_play->cards()->get()->toArray()[$key]['text'])) }}@endif</span>
                                 @endforeach
                             </h5>
                             <h6 class="card-subtitle" style="text-align:right;">{{ $turn->winning_play->player->user->name }}</h6>
-                        </div>
-                        <div class="card-footer">
-                            <button id="like-button" class="btn btn-default" type="button" onclick="like({{ $turn->winning_play->id }})">
-                                <i class="fa fa-thumbs-up"></i>
-                            </button>
-                            <span id="play-{{ $turn->winning_play->id }}"></span>
                         </div>
                     </div>
                 </div>
@@ -58,7 +52,7 @@
                                 <div class="card-body" @if($play->player->user->id == Auth::id()) style="background-color:rgba(255,255,255,0.2);" @endif>
                                     <h5 class="card-title">
                                         @foreach(json_decode($black_card->text) as $key => $black_piece)
-                                            {{ $black_piece }} <span class="white-text">@if(isset($play->cards()->get()->toArray()[$key])) {{ implode('',json_decode($play->cards()->get()->toArray()[$key]['text'])) }} @endif</span>
+                                            {{ $black_piece }} <span class="white-text">@if(isset($play->cards()->get()->toArray()[$key])){{ implode('',json_decode($play->cards()->get()->toArray()[$key]['text'])) }}@endif</span>
                                         @endforeach
                                     </h5>
                                     <h6 class="card-subtitle" style="text-align:right">{{ $play->player->user->name }}</h6>
@@ -123,7 +117,7 @@
         });
 
         channel.bind('play-like', function(data) {
-            $('#play-' + data.message.id).html(data.message.likes);
+            $('#play-' + data.message.id).html(data.message.likes + " lájk");
         });
 
         function like(id) {
@@ -138,39 +132,5 @@
             });
             $('#like-button').css('display','none');
         }
-        @if($time_left<=0)
-            $.ajax({
-                url: $('#ready-url').val(),
-                data: {
-                    _token: $('#_token').val()
-                },
-                type: "POST",
-                dataType: "json",
-                success: function(e){
-                    console.log(e);
-                },
-                error:function(e){
-                    console.log(e);
-                }
-            });
-            $('#ready').css('display','none');
-        @endif
-        setTimeout(function(){
-            $.ajax({
-                url: $('#ready-url').val(),
-                data: {
-                    _token: $('#_token').val()
-                },
-                type: "POST",
-                dataType: "json",
-                success: function(e){
-                    console.log(e);
-                },
-                error:function(e){
-                    console.log(e);
-                }
-            });
-            $('#ready').css('display','none');
-        }, {{ $time_left }});
     </script>
 @endpush
