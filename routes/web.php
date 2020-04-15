@@ -28,6 +28,18 @@ Route::group(['prefix' => 'game', 'as' => 'game.'], function(){
     Route::post('{game}/change', 'GameController@change')->name('change');
     Route::post('{game}/start', 'GameController@start')->name('start');
     Route::post('{game}/data', 'GameController@data')->name('data');
+    Route::post('{game}/submit', 'GameController@submit')->name('submit');
+
+    Route::get('{game}/choose-turn-winner', 'GameController@choose')->name('choose_turn_winner');
+    Route::get('{game}/choose/{play}/submit', 'GameController@chooseSubmit')->name('choose.submit');
+
+    Route::get('{game}/turn-recap', 'GameController@turnRecap')->name('turn.recap');
+
+    Route::post('{game}/ready', 'GameController@ready')->name('ready');
+    Route::post('{game}/like', 'GameController@like')->name('like');
+
+    Route::get('{slug}/finished', 'GameController@finished')->name('finished');
 
     Route::get('{slug}', 'GameController@play')->name('play');
 });
+

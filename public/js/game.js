@@ -90,4 +90,5 @@ $('#start').on('click', function(){
             console.log(e);
         }
     })
+    $('#start-button').css('display','none');
 });

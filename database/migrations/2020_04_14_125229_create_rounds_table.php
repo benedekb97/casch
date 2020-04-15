@@ -18,7 +18,7 @@ class CreateRoundsTable extends Migration
             $table->bigInteger('turn_id')->unsigned()->nullable();
             $table->foreign('turn_id')->references('id')->on('turns')->onDelete('set null');
             $table->bigInteger('game_id')->unsigned()->nullable();
-            $table->foreign('game_id')->references('id')->on('games')->onDelete('set null');
+            $table->foreign('game_id')->references('id')->on('games')->onDelete('cascade');
             $table->timestamps();
         });
     }

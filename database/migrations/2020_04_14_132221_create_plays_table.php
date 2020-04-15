@@ -16,9 +16,9 @@ class CreatePlaysTable extends Migration
         Schema::create('plays', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('player_id')->unsigned();
-            $table->foreign('player_id')->references('id')->on('players');
+            $table->foreign('player_id')->references('id')->on('players')->onDelete('cascade');
             $table->bigInteger('turn_id')->unsigned();
-            $table->foreign('turn_id')->references('id')->on('turns');
+            $table->foreign('turn_id')->references('id')->on('turns')->onDelete('cascade');
             $table->integer('points')->nullable();
             $table->softDeletes();
             $table->timestamps();
