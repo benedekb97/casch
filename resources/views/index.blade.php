@@ -8,11 +8,17 @@
             <div class="col-md-4">
                 <a href="{{ route('logout') }}" class="btn btn-block btn-lg btn-default">Kijelentkezés</a>
             </div>
-            @can('host')
+            @if(Auth::user()->player() == null)
+                @can('host')
+                    <div class="col-md-4">
+                        <a href="{{ route('host') }}" class="btn btn-block btn-lg btn-default">Új játék</a>
+                    </div>
+                @endcan
+            @else
                 <div class="col-md-4">
-                    <a href="{{ route('host') }}" class="btn btn-block btn-lg btn-default">Új játék</a>
+                    <a href="{{ route('join', ['slug' => Auth::user()->game()->slug]) }}" class="btn btn-block btn-lg btn-default">Visszacsatlakozás</a>
                 </div>
-            @endcan
+            @endif
             @can('edit-cards')
                 <div class="col-md-4">
                     <a href="{{ route('cards.index') }}" class="btn btn-block btn-lg btn-default">Kártyák</a>
@@ -29,6 +35,11 @@
                 <div class="col-md-4">
                     <a href="{{ route('test') }}" class="btn btn-block btn-lg btn-default">TEST</a>
                 </div>
+                <form action="{{ route('upload') }}" method="POST" enctype="multipart/form-data">
+                    {{ csrf_field() }}
+                    <input type="file" name="file">
+                    <input type="submit">
+                </form>
             @endif
         @endauth
     </div>

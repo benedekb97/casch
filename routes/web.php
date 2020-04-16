@@ -40,7 +40,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::post('{game}/ready', 'GameController@ready')->name('ready');
         Route::post('{game}/like', 'GameController@like')->name('like');
 
-        Route::get('{slug}/finished', 'GameController@finished')->name('finished');
+        Route::get('{slug}/finished/{page?}', 'GameController@finished')->name('finished');
 
         Route::get('{slug}', 'GameController@play')->name('play');
     });
@@ -48,4 +48,6 @@ Route::group(['middleware' => 'auth'], function(){
 });
 
 Route::get('join/{slug}', 'GameController@join')->name('join');
+
+Route::post('upload', 'GameController@upload')->name('upload');
 

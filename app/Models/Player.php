@@ -33,4 +33,18 @@ class Player extends Model
     {
         return $this->belongsToMany(Card::class, 'player_card','player_id','card_id');
     }
+
+    public function score()
+    {
+        $plays = $this->plays;
+        $score = 0;
+        foreach($plays as $play) {
+            $score += $play->points;
+            if($play->points == 0) {
+                $score += $play->likes;
+            }
+        }
+
+        return $score;
+    }
 }

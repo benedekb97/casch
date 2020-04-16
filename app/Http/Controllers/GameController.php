@@ -21,6 +21,7 @@ use App\Models\Play;
 use App\Models\Round;
 use App\Models\Turn;
 use Auth;
+use File;
 use Illuminate\Http\Request;
 use Session;
 use Str;
@@ -310,6 +311,11 @@ class GameController extends Controller
         $players = $game->users->where('deleted_at',null)->all();
         $played = $game->round->current_turn->players_played;
         $play = Auth::user()->player()->plays->where('turn_id', $game->round->current_turn->id)->first();
+        $scores = [];
+
+        foreach($players as $player) {
+            $scores[$player->id] = $player->player()->score();
+        }
 
         if($play != null) {
             $cards_played = [];
@@ -334,7 +340,8 @@ class GameController extends Controller
             'cards_needed' => $cards_needed,
             'players' => $players,
             'players_played' => $players_played,
-            'cards_played' => $cards_played
+            'cards_played' => $cards_played,
+            'scores' => $scores
         ]);
     }
 
@@ -448,6 +455,8 @@ class GameController extends Controller
         event(new TurnFinished([
             'id' => $play->id,
             'text' => $play_text,
+            'player_id' => $play->player->user->id,
+            'winner_points' => $play->player->score(),
             'recap_url' => route('game.turn.recap', ['game' => $game])
         ], $game->slug));
 
@@ -519,7 +528,7 @@ class GameController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function finished($slug)
+    public function finished($slug, $page = null)
     {
         $game = Game::withTrashed()->where('slug',$slug)->first();
 
@@ -529,23 +538,69 @@ class GameController extends Controller
 
         $rounds = Round::withTrashed()->where('game_id',$game->id)->get();
 
+        $all_plays = [];
+
         $points = [];
+
+        $in_game = false;
+
         $players = Player::withTrashed()->where('game_id',$game->id)->get();
         foreach($players as $player) {
             $plays = Play::withTrashed()->where('player_id', $player->id)->get();
             $player_points = 0;
             foreach($plays as $play) {
                 $player_points += $play->points + $play->likes;
+                $all_plays[] = $play;
             }
-            $points[$player->id] = [
+            $points[] = [
                 'name' => $player->user->name,
                 'points' => $player_points
             ];
+
+            if($player->user_id == Auth::id()) {
+                $in_game = true;
+            }
         }
+        if(!$in_game) {
+            abort(404);
+        }
+
+        $points = collect($points);
+
+        $points = $points->sort(function($a, $b){
+            if($a['points'] == $b['points']) {
+                return 0;
+            }
+
+            return ($a['points'] > $b['points']) ? -1 : 1;
+        });
+
+        $points = array_values($points->toArray());
+
+        $all_plays = collect($all_plays);
+        $pages = ceil($all_plays->count()/12);
+
+        $all_plays = $all_plays->sort(function($a, $b){
+            if($a->likes+$a->points == $b->likes+$b->points) {
+                return 0;
+            }
+
+            return ($a->likes+$a->points > $b->likes+$b->points) ? -1 : 1;
+        });
+
+        if($page === null) {
+            $best_plays = $all_plays->slice(0, 12);
+        }else{
+            $best_plays = $all_plays->forpage($page, 12);
+        }
+
 
         return view('finished',[
             'game' => $game,
-            'points' => $points
+            'points' => $points,
+            'plays' => $best_plays,
+            'page' => $page,
+            'pages' => $pages
         ]);
     }
 
@@ -577,4 +632,19 @@ class GameController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+//    public function upload(Request $request)
+//    {
+//        $file = $request->file('file');
+//
+//        $contents = File::get($file);
+//        $cards = explode(';', $contents);
+//
+//        foreach($cards as $text) {
+//            $card = new Card();
+//            $card->type='white';
+//            $card->text = json_encode([$text]);
+//            $card->save();
+//        }
+//    }
 }

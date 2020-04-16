@@ -7,7 +7,7 @@
     <div class="row">
         @foreach($games as $game)
             <div class="col-md-12" style="margin-bottom:15px;">
-                <a href="{{ route('games.game', ['game' => $game]) }}" class="card-link">
+                <a href="{{ route('game.finished', ['slug' => $game->slug]) }}" class="card-link">
                     <div class="card" style="border:1px solid rgba(255,255,255,0.4);">
                         <div class="card-header">
                             <i>{{ $game->created_at }}</i>

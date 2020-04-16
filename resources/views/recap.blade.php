@@ -14,7 +14,8 @@
                 <div class="card-body">
                     <ul class="list-group">
                         @foreach($game->players as $player)
-                            <li class="list-group-item" id="player-{{ $player->user->id }}">{{ $player->user->name }}</li>
+                            <li style="border-bottom:none; margin-bottom:0; padding-bottom:0;" class="list-group-item" id="player-{{ $player->user->id }}">{{ $player->user->name }}</li>
+                            <li style="border-top:none; padding-top:0; margin-top:0;" class="list-group-item" id="player-points-{{ $player->user->id }}"><i style="font-size:9pt">{{ $player->score() }} pont</i></li>
                         @endforeach
                     </ul>
                 </div>
@@ -143,6 +144,7 @@
             $('#play-block-' + winning_id).css('display','none');
             $('#title-text').html('Többi beadás');
             $('#ready').css('display','block');
+            $('#player-points-' + data.message.player_id).html("<i style='font-size:9pt'>" + data.message.winner_points + " pont</i>");
         });
 
         channel.bind('start-load', function(){
