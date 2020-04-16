@@ -158,10 +158,10 @@ let slug = $('#slug').val();
 let channel = pusher.subscribe('game-' + slug);
 
 channel.bind('turn-plays-finished', function(data) {
-    if($('#user_id').val() == data.message) {
+    if($('#user_id').val() == data.message.host_id) {
         window.location = $('#choose_winner_url').val();
     }else{
-        $('#waiting-for-host').modal('toggle');
+        window.location = data.message.recap_url;
     }
 });
 
@@ -176,5 +176,5 @@ channel.bind('play-card', function(data) {
 });
 
 channel.bind('turn-finished', function(data) {
-    window.location = data.message;
+    window.location = data.message.recap_url;
 });

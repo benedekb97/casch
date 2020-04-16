@@ -61,12 +61,41 @@
     <input type="hidden" id="slug" value="{{ $game->slug }}">
     <input type="hidden" id="user_id" value="{{ Auth::id() }}">
     <input type="hidden" id="player_id" value="{{ $player_id }}">
-    <input type="hidden" id="change_url" value="{{ route('game.change', ['game' => $game]) }}">
+    <input type="hidden" id="change_url" value="{{ route('game.change', ['slug' => $game->slug]) }}">
     <input type="hidden" id="start_game_url" value="{{ route('game.start', ['game' => $game]) }}">
     <input type="hidden" id="game_url" value="{{ route('game.play', ['slug' => $game->slug]) }}">
     <input type="hidden" id="_token" value="{{ csrf_token() }}">
 @endsection
 
+@push('modals')
+    <div class="modal fade" id="waiting-for-game">
+        <div class="modal-dialog" style="padding:0; margin:0;">
+            <div class="modal-content" style="background:rgba(0,0,0,0.5); width:100vw; height:100vh;">
+                <h2 style="text-align:center; margin-top:45vh; margin-bottom:0">Várakozás <i class="fa fa-spin fa-wheelchair"></i></h2>
+                <h3 style="text-align:center;  margin-top:0; padding:5px;" id="wait-text"></h3>
+            </div>
+        </div>
+    </div>
+@endpush
+
 @push('scripts')
+    <script>
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * Math.floor(max));
+        }
+        let messages = [
+            @foreach($messages as $message)
+            '{{ $message }}',
+            @endforeach
+        ];
+        setInterval(function(){
+            $('#wait-text').html(messages[getRandomInt(messages.length)]);
+        }, 3000);
+        setInterval(function(){
+            let text = $('#wait-text').html();
+            text += `.`;
+            $('#wait-text').html(text);
+        },1000);
+    </script>
     <script src="{{ asset('js/game.js') }}"></script>
 @endpush

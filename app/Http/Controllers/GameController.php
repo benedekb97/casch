@@ -10,6 +10,7 @@ use App\Events\NewTurn;
 use App\Events\PlayerReady;
 use App\Events\StartGame;
 use App\Events\PlayCards;
+use App\Events\StartLoad;
 use App\Events\TurnPlaysFinished;
 use App\Events\TurnFinished;
 use App\Events\FinishedGame;
@@ -26,6 +27,60 @@ use Str;
 
 class GameController extends Controller
 {
+    private $messages = [
+        'Kártyák kiosztása',
+        'Kiscicák simogatása',
+        'Karantén megszegése',
+        'Korona továbbítása',
+        'WC-papír ellopása',
+        '1020 ajtó felgyújtása',
+        'Kerámia megtömése',
+        'WC felrobbantása',
+        'Petárda begyújtása',
+        'Hátrányos helyzetűek kinevetése',
+        'Macskaalom nyakbaöntése',
+        '1020 ágyú újratöltése',
+        'WC-papír osztás elfelejtése',
+        'Sör szisszentése',
+        'S.I.R. chat lenémítása',
+        'Hímzőgép karbantartása',
+        'Nem létező akvárium kitakarítása',
+        'Lábszag szippantása',
+        'Szenek felrakása',
+        'Alufólia lyukasztása',
+        'Hitler újraélesztése',
+        'FFSZ logó felfestése',
+        'QPA megrendezése (szarul)',
+        'Májkrém kidobása a 10-ről',
+        'MOL székház becélzása',
+        'Portások felbaszása',
+        'Jakab Zoltán kirugása',
+        'Zöld István elszívása',
+        'FNT körbehányása',
+        'Antennák kikerülése',
+        'Pipa beégetése',
+        'Pipa elszívása',
+        'Liftközbuli szétrobbantása',
+        'Mentor hívása',
+        'S.I.R. tábor megrendezése',
+        'Rádió lemerítése',
+        'Harci kutyák dolgoztatása',
+        'Korsó elejtése',
+        'Korsó összeragasztása',
+        'Nagymester leitatása',
+        'Juniorok csicskáztatása',
+        'Gólyák csicskáztatása',
+        'Seniorok csicskáztatása',
+        'Apródok csicskáztatása',
+        'Lovagok csicskáztatása',
+        'Nagymester csicskáztatása',
+        'Várurak csicskáztatása',
+        'Hetek csicskáztatása',
+        'KB feloszlatása',
+        'OBI feloszlatása',
+        'HK feloszlatása'
+    ];
+
     public function host()
     {
         if(Auth::user()->hostedGame==null){
@@ -52,10 +107,10 @@ class GameController extends Controller
             event(new LeaveGame(['id' => Auth::user()->player()->id, 'name' => Auth::user()->name], Auth::user()->game()->slug));
         }
 
-
         return view('game',[
             'game' => $game,
-            'player_id' => $player->id
+            'player_id' => $player->id,
+            'messages' => $this->messages
         ]);
     }
 
@@ -103,7 +158,8 @@ class GameController extends Controller
 
         return view('game', [
             'game' => $game,
-            'player_id' => $player->id
+            'player_id' => $player->id,
+            'messages' => $this->messages
         ]);
     }
 
@@ -117,7 +173,7 @@ class GameController extends Controller
 
         $player_id = Auth::user()->player()->id;
 
-        Auth::user()->player()->delete();
+        Auth::user()->player()->forceDelete();
 
         $next_host = $game->players->first();
 
@@ -143,8 +199,13 @@ class GameController extends Controller
         return redirect()->route('index');
     }
 
-    public function change(Game $game, Request $request)
+    public function change($slug, Request $request)
     {
+        $game = Game::where('slug',$slug)->first();
+        if($game == null) {
+            abort(404);
+        }
+
         if(Auth::id() != $game->host->id) {
             return response()->json(['success' => false]);
         }
@@ -169,6 +230,8 @@ class GameController extends Controller
         if($game->players->count() < 2) {
             return response()->json(['success' => false]);
         }
+
+        event(new StartLoad(null, $game->slug));
 
         $all_players = $game->players;
         $first_host = $all_players->random();
@@ -225,6 +288,10 @@ class GameController extends Controller
         if($game->round->current_turn->everyonePlayed() && $game->round->current_turn->host->user->id == Auth::id() && $game->round->current_turn->winning_play_id == null) {
             return redirect()->route('game.choose_turn_winner', ['game' => $game]);
         }
+
+//        if($game->round->current_turn->everyonePlayed()) {
+//            return redirect()->route('game.turn.recap', ['game' => $game]);
+//        }
 
         if($game->finished) {
             return redirect()->route('game.finished', ['slug' => $game->slug]);
@@ -326,7 +393,10 @@ class GameController extends Controller
         }
 
         if($game->round->current_turn->everyonePlayed()) {
-            event(new TurnPlaysFinished($game->round->current_turn->host->user->id, $game->slug));
+            event(new TurnPlaysFinished([
+                'host_id' => $game->round->current_turn->host->user->id,
+                'recap_url' => route('game.turn.recap', ['game' => $game])
+            ], $game->slug));
         }else{
             event(new PlayCards(Auth::id(), $game->slug));
         }
@@ -362,10 +432,24 @@ class GameController extends Controller
         $play->points = $game->players()->count();
         $play->save();
 
+        $play_text = "";
+
+        $black_card = $game->round->current_turn->card;
+        foreach(json_decode($black_card->text) as $key => $text) {
+            $play_text .= $text;
+            if(isset($play->cards()->get()->toArray()[$key])) {
+                $play_text .= "<span class='white-text'>".implode('', json_decode($play->cards()->get()->toArray()[$key]['text'], true))."</span>";
+            }
+        }
+
         $game->round->current_turn->winning_play_id = $play->id;
         $game->round->current_turn->save();
 
-        event(new TurnFinished(route('game.turn.recap', ['game' => $game]), $game->slug));
+        event(new TurnFinished([
+            'id' => $play->id,
+            'text' => $play_text,
+            'recap_url' => route('game.turn.recap', ['game' => $game])
+        ], $game->slug));
 
         return redirect()->route('game.turn.recap', ['game' => $game]);
     }
@@ -376,7 +460,6 @@ class GameController extends Controller
             if($game->round->current_turn->host->user->id === Auth::id() && $game->round->current_turn->everyonePlayed()) {
                 return redirect()->route('game.choose_turn_winner', ['game' => $game]);
             }
-            return redirect()->route('game.play', ['slug' => $game->slug]);
         }
 
         $time_left = (strtotime($game->round->current_turn->updated_at)+10-time())*10000;
@@ -385,7 +468,8 @@ class GameController extends Controller
             'game' => $game,
             'turn' => $game->round->current_turn,
             'black_card' => $game->round->current_turn->card,
-            'time_left' => $time_left
+            'time_left' => $time_left,
+            'messages' => $this->messages
         ]);
     }
 
@@ -398,6 +482,10 @@ class GameController extends Controller
             return response()->json(['success' => false]);
         }
 
+        if($game->round->current_turn->winning_play_id == null) {
+            return response()->json(['success' => false]);
+        }
+
         Auth::user()->player()->ready = true;
         Auth::user()->player()->save();
 
@@ -405,7 +493,7 @@ class GameController extends Controller
         event(new PlayerReady(Auth::id(), $game->slug));
 
         if($game->everyPlayerReady()) {
-
+            event(new StartLoad(true, $game->slug));
             $game->setupNewTurn();
 
             if($game->finished == true) {

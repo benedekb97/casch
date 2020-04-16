@@ -56,6 +56,10 @@ channel.bind('start-game', function(data){
     window.location = $('#game_url').val();
 });
 
+channel.bind('start-load', function(){
+    $('#waiting-for-game').modal('show');
+});
+
 $('#game-slug').on('click', function(e){
     e.target.select();
     document.execCommand('copy');

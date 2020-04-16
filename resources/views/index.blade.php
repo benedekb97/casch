@@ -18,6 +18,9 @@
                     <a href="{{ route('cards.index') }}" class="btn btn-block btn-lg btn-default">Kártyák</a>
                 </div>
             @endcan
+            <div class="col-md-4">
+                <a href="{{ route('games.index') }}" class="btn btn-block btn-lg btn-default">Eddigi játékaim</a>
+            </div>
         @else
             <div class="col-md-4">
                 <a href="{{ route('login') }}" class="btn btn-block btn-lg btn-default">Bejelentkezés</a>
