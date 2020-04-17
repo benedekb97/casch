@@ -19,4 +19,9 @@ class SiteController extends Controller
             'featured_plays' => $plays
         ]);
     }
+
+    public function disclaimer()
+    {
+        return view('disclaimer');
+    }
 }

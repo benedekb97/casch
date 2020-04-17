@@ -4,6 +4,16 @@
 
 @section('content')
     <div class="row">
+        <div class="col-md-4 offset-md-4">
+            <div class="alert alert-dismissible alert-warning">
+                <h4 style="color:#856404; margin-top:5px;">Hellóbelló <i class="fa fa-exclamation-triangle"></i></h4>
+                <p style="color:#856404;">Az oldal erősen fejlesztés alatt áll, ezért kérlek ha valami hibát észlelsz írj egy emailt <a data-toggle="tooltip" title="Hidd el, eltalál hozzám!" href="mailto:tylersmumisafitslut@gmail.com">erre</a> az email címre!</p>
+                <p style="color:#856404; font-style:italic;">Jó játékot!</p>
+                <button class="close" data-dismiss="alert">&times;</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-3">
             <div class="card">
                 <a href="{{ route('leave') }}" class="btn btn-default btn-block">

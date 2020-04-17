@@ -54,6 +54,8 @@ Route::group(['middleware' => 'auth'], function(){
 
 });
 
+Route::get('disclaimer', 'SiteController@disclaimer')->name('disclaimer');
+
 Route::get('join/{slug}', 'GameController@join')->name('join');
 
 Route::post('upload', 'GameController@upload')->name('upload');

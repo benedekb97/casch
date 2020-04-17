@@ -43,6 +43,7 @@
             @endif
         @endauth
     </div>
+    @auth
     <div class="row">
         <div class="col-md-12">
             <div class="card" style="margin-bottom:15px;">
@@ -67,5 +68,11 @@
                 @endif
             </div>
         @endforeach
+    </div>
+    @endauth
+    <div class="row justify-content-center">
+        <div class="col-md-3" style="text-align:center;">
+            <a href="{{ route('disclaimer') }}">Dislaimer</a>
+        </div>
     </div>
 @endsection
