@@ -146,8 +146,6 @@ function addAnswer(card_id, card_text) {
     reset_button_div.css('display','block');
 }
 
-Pusher.logToConsole = true;
-
 let pusher = new Pusher('c294b79228fa69e9f4f5', {
     cluster: 'eu',
     forceTLS: true

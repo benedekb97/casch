@@ -23,11 +23,6 @@ class FinishedGame implements ShouldBroadcast
         $this->game_slug = $game_slug;
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
     public function broadcastOn()
     {
         return ['game-' . $this->game_slug];

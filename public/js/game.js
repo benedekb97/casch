@@ -1,5 +1,3 @@
-Pusher.logToConsole = true;
-
 var pusher = new Pusher('c294b79228fa69e9f4f5', {
     cluster: 'eu',
     forceTLS: true
@@ -133,6 +131,6 @@ $('#start').on('click', function(){
         error:function(e){
             console.log(e);
         }
-    })
+    });
     $('#start-button').css('display','none');
 });

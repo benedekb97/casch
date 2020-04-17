@@ -43,4 +43,29 @@
             @endif
         @endauth
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card" style="margin-bottom:15px;">
+                <div class="card-header">
+                    <h4 class="card-title"><b>Kiemelkedő minőségű kártyák</b></h4>
+                </div>
+            </div>
+        </div>
+        @foreach($featured_plays as $play)
+            <div class="col-md-4">
+                @if(in_array(Auth::id(),$play->getUsers()))
+                    <a class="card-link-black" href="{{ route('game.finished', ['slug' => $play->getGame()->slug]) }}">
+                @endif
+                    <div class="card" id="black-card">
+                        <div class="card-body">
+                            <h5 class="card-title">{!! $play->getTextHTML() !!}</h5>
+                            <p style="text-align:right; font-size:10pt;">{{ $play->getPlayer()->user->name }}</p>
+                        </div>
+                    </div>
+                @if(in_array(Auth::id(),$play->getUsers()))
+                    </a>
+                @endif
+            </div>
+        @endforeach
+    </div>
 @endsection

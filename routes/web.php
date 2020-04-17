@@ -47,6 +47,11 @@ Route::group(['middleware' => 'auth'], function(){
         Route::post('{slug}/lobby/ready', 'GameController@readyLobbyToggle')->name('lobby.ready');
     });
 
+    Route::group(['prefix' => 'plays', 'as' => 'plays.'], function(){
+        Route::get('{play}/feature', 'PlayController@feature')->name('feature');
+        Route::get('{play}/unfeature', 'PlayController@unfeature')->name('unfeature');
+    });
+
 });
 
 Route::get('join/{slug}', 'GameController@join')->name('join');

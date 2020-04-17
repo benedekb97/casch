@@ -11,7 +11,7 @@
     </head>
     <body>
     <div class="container">
-        <h1 class="page-header">Cards Against <span class="sch">Schönherz</span></h1>
+        <h1 class="page-header"><a style="text-decoration:none; color:white;" href="{{ route('index') }}">Cards Against <span class="sch">Schönherz</span></a></h1>
         @yield('content')
     </div>
     <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>

@@ -66,7 +66,7 @@
                                 </div>
                                 <div class="card-footer">
                                     @if($play->player->user->id !== Auth::id())
-                                        <button id="like-button" class="btn btn-default" type="button" onclick="like({{ $play->id }})">
+                                        <button style="display:none;" id="like-button-{{ $play->id }}" class="btn btn-default" type="button" onclick="like({{ $play->id }})">
                                             <i class="fa fa-thumbs-up"></i>
                                         </button>
                                     @endif
@@ -96,6 +96,11 @@
 
 @push('scripts')
     <script>
+        let plays = [
+            @foreach($turn->plays as $play)
+            '{{ $play->id }}',
+            @endforeach
+        ];
         $('#ready-button').on('click', function(){
             $.ajax({
                 url: $('#ready-url').val(),
@@ -143,6 +148,10 @@
             let winning_name = data.message.name;
             let time_left = parseInt(data.message.time_left)*1000;
 
+            plays.forEach(function(element){
+                $('#like-button-' + element).css('display','inline');
+            });
+
             $('#winner').css('display','block');
             $('#winner-row').css('display','block');
             $('#winner-text').html(winning_text);
@@ -152,7 +161,9 @@
             $('#title-text').html('Többi beadás');
             $('#ready').css('display','block');
             $('#player-points-' + data.message.player_id).html("<i style='font-size:9pt'>" + data.message.winner_points + " pont</i>");
-            startCountdown(time_left);
+            if(data.messaage.ready != 1){
+                startCountdown(time_left);
+            }
         });
 
         function startCountdown(time_left) {
@@ -186,7 +197,11 @@
                     play_id: id
                 }
             });
-            $('#like-button').css('display','none');
+            plays.forEach(function(element){
+                if(element != id){
+                    $('#like-button-' + element).css('display','none');
+                }
+            });
         }
         function getRandomInt(max) {
             return Math.floor(Math.random() * Math.floor(max));
@@ -204,10 +219,10 @@
             text += `.`;
             $('#wait-text').html(text);
         },1000);
-        @if($time_left<=0)
+        @if($time_left<=0 && !Auth::user()->player()->ready)
             $('#ready-button').click();
         @endif
-        @if($time_left<time()-10)
+        @if($time_left<time()-10 && !Auth::user()->player()->ready)
             let time_left = parseInt({{ $time_left }})+1;
             setInterval(function(){
                 time_left--;

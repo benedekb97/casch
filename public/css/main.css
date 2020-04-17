@@ -177,3 +177,6 @@ a.card-score:hover i{
     color:yellow !important;
 }
 
+.btn-block{
+    margin-bottom:15px;
+}

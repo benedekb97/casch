@@ -21,6 +21,27 @@ class Play extends Model
         return $player;
     }
 
+    public function getUsers()
+    {
+        $player = Player::withTrashed()->where('id',$this->player_id)->first();
+        $players = Player::withTrashed()->where('game_id',$player->game_id)->get();
+
+        $users = [];
+        foreach($players as $player){
+            $users[] = $player->user_id;
+        }
+
+        return $users;
+    }
+
+    public function getGame()
+    {
+        $player = Player::withTrashed()->where('id',$this->player_id)->first();
+        $game = Game::withTrashed()->where('id',$player->game_id)->first();
+
+        return $game;
+    }
+
     public function cards()
     {
         return $this->belongsToMany(Card::class,'play_card', 'play_id','card_id');

@@ -81,6 +81,23 @@
                                                     <i style="font-size:10pt;">{{ $play->likes }} lájk</i>
                                                 </div>
                                             @endif
+                                            @if($play->featured)
+                                                @can('unfeature-play')
+                                                    <div class="card-footer" style="line-height:10pt">
+                                                        <a style="background:gold;" class="btn btn-sm btn-default" href="{{ route('plays.unfeature', ['play' => $play->id]) }}">
+                                                            <i class="fa fa-star"></i>
+                                                        </a>
+                                                    </div>
+                                                @endcan
+                                            @else
+                                                @can('feature-play')
+                                                    <div class="card-footer" style="line-height:10pt">
+                                                        <a class="btn btn-sm btn-default" href="{{ route('plays.feature', ['play' => $play->id]) }}">
+                                                            <i class="fa fa-star"></i>
+                                                        </a>
+                                                    </div>
+                                                @endcan
+                                            @endif
                                         </div>
                                     </div>
                                 @endforeach

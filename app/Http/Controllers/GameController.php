@@ -496,6 +496,7 @@ class GameController extends Controller
             'player_id' => $play->player->user->id,
             'name' => $play->player->user->name,
             'winner_points' => $play->player->score(),
+            'ready' => Auth::user()->player()->ready,
             'time_left' => $time_left,
             'recap_url' => route('game.turn.recap', ['game' => $game])
         ], $game->slug));
