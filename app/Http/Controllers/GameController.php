@@ -151,6 +151,7 @@ class GameController extends Controller
         if($game->started == true && (Auth::user()->game() == null || Auth::user()->game()->id != $game->id)) {
             // if the game started and you are not in the game
 //            if(Auth::user()->game() != null){
+            abort(404);
                 return redirect()->route('game.play', ['slug' => Auth::user()->game()->slug]);
 //            }
         }
