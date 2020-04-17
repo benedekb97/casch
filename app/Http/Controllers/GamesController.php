@@ -19,6 +19,15 @@ class GamesController extends Controller
             $games[] = Game::onlyTrashed()->where('id',$player->game_id)->first();
         }
 
+        $games = collect($games);
+        $games = $games->sort(function($a, $b) {
+            if($a->created_at == $b->created_at) {
+                return 0;
+            }
+
+            return ($a->created_at > $b->created_at) ? -1 : 1;
+        });
+
         return view('games.index', [
             'games' => $games,
             'players' => $players
