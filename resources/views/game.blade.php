@@ -39,7 +39,13 @@
                     </div>
                     <div class="input-group" id="start-button">
                         @if($game->host->id == Auth::id())
-                            <button style="margin-top:10px;" type="button" class="btn btn-block btn-primary" id="start">Indítás</button>
+                            <button style="margin-top:10px; @if(!$everyone_ready) display:none; @endif" type="button" class="btn btn-block btn-primary" id="start">Indítás</button>
+                        @else
+                            @if(Auth::user()->player() == null || !Auth::user()->player()->ready)
+                                <button style="margin-top:10px" type="button" class="btn btn-block btn-primary" id="ready">Ready</button>
+                            @else
+                                <button style="margin-top:10px" type="button" class="btn btn-block btn-default" id="ready">Unready</button>
+                            @endif
                         @endif
                     </div>
                 </div>
@@ -51,7 +57,15 @@
                     <h5 class="card-title">Résztvevők</h5>
                     <ul class="list-group" id="user-list">
                         @foreach($game->players as $player)
-                            <li @if($player->user->id == Auth::id()) data-toggle="tooltip" title="Ez vagy Te!" style="font-weight:bold; background:rgba(255,255,255,0.2);" @endif class="list-group-item" id="player_{{ $player->id }}">{{ $player->user->name }}@if($player->user->id == $game->host->id) <i data-toggle="tooltip" title="Játékvezető" class="fa fa-crown"></i>@endif</li>
+                            <li @if($player->user->id == Auth::id()) data-toggle="tooltip" title="Ez vagy Te!" style="font-weight:bold; background:rgba(255,255,255,0.2);" @endif class="list-group-item" id="player_{{ $player->id }}">{{ $player->user->name }}@if($player->user->id == $game->host->id) <i data-toggle="tooltip" title="Játékvezető" class="fa fa-crown"></i>@endif
+                                @if($player->user->id != $game->host->id)
+                                    @if($player->ready)
+                                        &nbsp;<i id="ready-{{ $player->id }}" class="fa fa-check" style="display:inline"></i>
+                                    @else
+                                        &nbsp;<i id="ready-{{ $player->id }}" class="fa fa-check" style="display:none"></i>
+                                    @endif
+                                @endif
+                            </li>
                         @endforeach
                     </ul>
                 </div>
@@ -65,6 +79,7 @@
     <input type="hidden" id="start_game_url" value="{{ route('game.start', ['game' => $game]) }}">
     <input type="hidden" id="game_url" value="{{ route('game.play', ['slug' => $game->slug]) }}">
     <input type="hidden" id="_token" value="{{ csrf_token() }}">
+    <input type="hidden" id="ready_url" value="{{ route('game.lobby.ready', ['slug' => $game->slug]) }}">
 @endsection
 
 @push('modals')

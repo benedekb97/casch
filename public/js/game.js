@@ -9,14 +9,14 @@ let slug = $('#slug').val();
 
 var channel = pusher.subscribe('game-' + slug);
 channel.bind('join-game', function(data) {
-    console.log(data);
     let html = $('#user-list').html();
-    html += `<li class="list-group-item" id="player_` + data.message.id + `">` + data.message.name + "</li>";
+    html += `<li class="list-group-item" id="player_${data.message.id}">${data.message.name}&nbsp;<i id="ready-${data.message.id}" class="fa fa-check" style="display:none"></i></li>`;
 
     $('#user-list').html(html);
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
     });
+    $('#start').css('display','none');
 });
 
 channel.bind('leave-game', function(data) {
@@ -58,6 +58,46 @@ channel.bind('start-game', function(data){
 
 channel.bind('start-load', function(){
     $('#waiting-for-game').modal('show');
+});
+
+channel.bind('player-ready', function(data){
+    let user_id = data.message.id;
+    let everyone_ready = data.message.everyone_ready;
+    let ready_icon = $('#ready-' + user_id);
+    if(ready_icon.css('display') == 'inline'){
+        ready_icon.css('display','none');
+    }else{
+        ready_icon.css('display','inline');
+    }
+
+    if(everyone_ready) {
+        $('#start').css('display','block');
+    }else{
+        $('#start').css('display','none');
+    }
+});
+
+$('#ready').on('click', function(){
+    $.ajax({
+        url: $('#ready_url').val(),
+        type: "POST",
+        dataType: "json",
+        data: {
+            _token: $('#_token').val()
+        },
+        success: function(e){
+            console.log(e);
+        }
+    });
+    if($('#ready').html() == "Ready") {
+        $('#ready').html("Unready");
+        $('#ready').removeClass('btn-primary');
+        $('#ready').addClass('btn-default');
+    }else{
+        $('#ready').html('Ready');
+        $('#ready').removeClass('btn-default');
+        $('#ready').addClass('btn-primary');
+    }
 });
 
 $('#game-slug').on('click', function(e){

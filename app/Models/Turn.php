@@ -57,4 +57,22 @@ class Turn extends Model
 
         return $everyone_played;
     }
+
+    public function allPlayed()
+    {
+        $host_id = $this->host->id;
+
+        $can_play = $this->round->game->players->filter(function($item) use ($host_id){
+            return $item->id !== $host_id;
+        });
+
+        $all = true;
+        foreach($can_play as $player) {
+            if($this->plays->where('player_id', $player->id)->first() === null) {
+                $all = false;
+            }
+        }
+
+        return $all;
+    }
 }

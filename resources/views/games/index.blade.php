@@ -3,7 +3,7 @@
 @section('title','Eddigi játékaim')
 
 @section('content')
-    <h2>Eddigi játékaim</h2>
+    <h2>Eddigi játékaim &raquo; <a href="{{ route('index') }}">Főoldal</a></h2>
     <div class="row">
         @foreach($games as $game)
             <div class="col-md-12" style="margin-bottom:15px;">

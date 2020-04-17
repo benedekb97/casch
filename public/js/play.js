@@ -42,12 +42,12 @@ $(document).ready(function(){
             // Show players
             e.players.forEach(function(element){
                 if(element.id===host_user_id){
-                    players_html += `<li style="border-bottom:none; margin-bottom:0; padding-bottom:0;" class="list-group-item" id="player-${element.id}">${element.name} <i data-toggle="tooltip" title="Ő választ nyertest" class="fa fa-crown"></i></li><li class="list-group-item" style="border-top:none; padding-top:0; margin-top:0;"><i style="font-size:9pt">${e.scores[element.id]} pont</i></li>`;
+                    players_html += `<li style="border-bottom:none; margin-bottom:0; padding-bottom:0;" class="list-group-item" id="player-${element.id}">${element.name} <i data-toggle="tooltip" title="Ő választ nyertest" class="fa fa-crown"></i></li><li id="player-score-${element.id}" class="list-group-item" style="border-top:none; padding-top:0; margin-top:0;"><i style="font-size:9pt">${e.scores[element.id]} pont</i></li>`;
                 }else{
                     if($.inArray(element.id, e.players_played) !== -1) {
-                        players_html += `<li style="border-bottom:none; margin-bottom:0; padding-bottom:0; background:rgba(255,255,255,0.2);" class="list-group-item" id="player-${element.id}">${element.name} <i class="fa fa-check"></i></li><li class="list-group-item" style="border-top:none; padding-top:0; margin-top:0;"><i style="font-size:9pt">${e.scores[element.id]} pont</i></li>`;
+                        players_html += `<li style="border-bottom:none; margin-bottom:0; padding-bottom:0; background:rgba(255,255,255,0.2);" class="list-group-item" id="player-${element.id}">${element.name} <i class="fa fa-check"></i></li><li id="player-score-${element.id}" class="list-group-item" style=" background:rgba(255,255,255,0.2); border-top:none; padding-top:0; margin-top:0;"><i style="font-size:9pt">${e.scores[element.id]} pont</i></li>`;
                     }else{
-                        players_html += `<li style="border-bottom:none; margin-bottom:0; padding-bottom:0;" class="list-group-item" id="player-${element.id}">${element.name}</li><li class="list-group-item" style="border-top:none; padding-top:0; margin-top:0;"><i style="font-size:9pt">${e.scores[element.id]} pont</i></li>`;
+                        players_html += `<li style="border-bottom:none; margin-bottom:0; padding-bottom:0;" class="list-group-item" id="player-${element.id}">${element.name}</li><li id="player-score-${element.id}" class="list-group-item" style="border-top:none; padding-top:0; margin-top:0;"><i style="font-size:9pt">${e.scores[element.id]} pont</i></li>`;
                     }
                 }
             });
@@ -173,6 +173,7 @@ channel.bind('play-card', function(data) {
     if(data.message == $('#user_id').val()){
         location.reload();
     }
+    $('#player-score-' + data.message).css('background','rgba(255,255,255,0.2)');
 });
 
 channel.bind('turn-finished', function(data) {

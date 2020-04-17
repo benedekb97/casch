@@ -107,11 +107,18 @@ class GameController extends Controller
         if(Auth::user()->game() != null && (Auth::user()->hostedGame == null || Auth::user()->hostedGame->id != Auth::user()->game()->id)) {
             event(new LeaveGame(['id' => Auth::user()->player()->id, 'name' => Auth::user()->name], Auth::user()->game()->slug));
         }
+        $everyone_ready = true;
+        foreach($game->players as $player){
+            if(!$player->ready && $player->user->id != $game->host->id){
+                $everyone_ready = false;
+            }
+        }
 
         return view('game',[
             'game' => $game,
             'player_id' => $player->id,
-            'messages' => $this->messages
+            'messages' => $this->messages,
+            'everyone_ready' => $everyone_ready
         ]);
     }
 
@@ -142,7 +149,10 @@ class GameController extends Controller
         }
 
         if($game->started == true && (Auth::user()->game() == null || Auth::user()->game()->id != $game->id)) {
-            abort(404);
+            // if the game started and you are not in the game
+//            if(Auth::user()->game() != null){
+                return redirect()->route('game.play', ['slug' => Auth::user()->game()->slug]);
+//            }
         }
 
         if(Auth::user()->player() == null) {
@@ -155,12 +165,22 @@ class GameController extends Controller
         }else{
             $player = Auth::user()->player();
         }
+//        if($game->started && ($game->round->current_turn->winner_id != null)) {
+//            return redirect()->route('game.turn.recap', ['game' => $game]);
+//        }
 
+        $everyone_ready = true;
+        foreach($game->players as $player){
+            if(!$player->ready && $player->user->id != $game->host->id){
+                $everyone_ready = false;
+            }
+        }
 
         return view('game', [
             'game' => $game,
             'player_id' => $player->id,
-            'messages' => $this->messages
+            'messages' => $this->messages,
+            'everyone_ready' => $everyone_ready
         ]);
     }
 
@@ -233,6 +253,12 @@ class GameController extends Controller
         }
 
         event(new StartLoad(null, $game->slug));
+
+        foreach($game->players as $player)
+        {
+            $player->ready = 0;
+            $player->save();
+        }
 
         $all_players = $game->players;
         $first_host = $all_players->random();
@@ -420,6 +446,10 @@ class GameController extends Controller
             abort(403);
         }
 
+        if(Auth::user()->game()== null || Auth::user()->game()->id != $game->id) {
+            abort(404);
+        }
+
         return view('choose-turn-winner',[
             'plays' => $game->round->current_turn->plays,
             'black_card' => $game->round->current_turn->card,
@@ -436,10 +466,15 @@ class GameController extends Controller
             abort(403);
         }
 
+        if(Auth::user()->game()== null || Auth::user()->game()->id != $game->id) {
+            abort(404);
+        }
+
         $play->points = $game->players()->count();
         $play->save();
 
         $play_text = "";
+
 
         $black_card = $game->round->current_turn->card;
         foreach(json_decode($black_card->text) as $key => $text) {
@@ -449,14 +484,19 @@ class GameController extends Controller
             }
         }
 
+
         $game->round->current_turn->winning_play_id = $play->id;
         $game->round->current_turn->save();
+
+        $time_left = strtotime($game->round->current_turn->updated_at)+max($game->players()->count()*3,10)-time();
 
         event(new TurnFinished([
             'id' => $play->id,
             'text' => $play_text,
             'player_id' => $play->player->user->id,
+            'name' => $play->player->user->name,
             'winner_points' => $play->player->score(),
+            'time_left' => $time_left,
             'recap_url' => route('game.turn.recap', ['game' => $game])
         ], $game->slug));
 
@@ -465,13 +505,25 @@ class GameController extends Controller
 
     public function turnRecap(Game $game)
     {
+        if(Auth::user()->game()== null || Auth::user()->game()->id != $game->id) {
+            abort(404);
+        }
+
         if($game->round->current_turn->winning_play_id===null || !$game->round->current_turn->everyonePlayed()) {
             if($game->round->current_turn->host->user->id === Auth::id() && $game->round->current_turn->everyonePlayed()) {
                 return redirect()->route('game.choose_turn_winner', ['game' => $game]);
             }
         }
 
-        $time_left = (strtotime($game->round->current_turn->updated_at)+10-time())*10000;
+        if(!$game->round->current_turn->allPlayed()) {
+            return redirect()->route('game.play', ['slug' => $game->slug]);
+        }
+
+        if($game->round->current_turn->winning_play!=null) {
+            $time_left = strtotime($game->round->current_turn->updated_at)+max($game->players()->count()*3,10)-time();
+        }else{
+            $time_left = time();
+        }
 
         return view('recap', [
             'game' => $game,
@@ -640,11 +692,41 @@ class GameController extends Controller
 //        $contents = File::get($file);
 //        $cards = explode(';', $contents);
 //
+//        $count = 0;
 //        foreach($cards as $text) {
 //            $card = new Card();
-//            $card->type='white';
-//            $card->text = json_encode([$text]);
+//            $card->type='black';
+//            $card->text = json_encode(explode('<blank>',$text));
 //            $card->save();
+//            $count++;
 //        }
+//
+//        return dd($count . " cards uploaded");
 //    }
+
+    public function readyLobbyToggle($slug)
+    {
+        $game = Game::where('slug', $slug)->first();
+
+        if($game == null || Auth::user()->game() == null || Auth::user()->game()->id != $game->id) {
+            return response()->json(['success' => false]);
+        }
+
+        Auth::user()->player()->ready = !Auth::user()->player()->ready;
+        Auth::user()->player()->save();
+
+        $everyone_ready = true;
+        foreach($game->players as $player){
+            if(!$player->ready && $player->user->id != $game->host->id){
+                $everyone_ready = false;
+            }
+        }
+
+        event(new PlayerReady([
+            'id' => Auth::user()->player()->id,
+            'everyone_ready' => $everyone_ready
+        ], $slug));
+
+        return response()->json(['success' => true]);
+    }
 }

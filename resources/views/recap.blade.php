@@ -9,12 +9,12 @@
     <input type="hidden" id="slug" value="{{ $game->slug }}">
     <input type="hidden" id="_token" value="{{ csrf_token() }}">
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-lg-4">
             <div class="card" style="margin-bottom:20px;">
                 <div class="card-body">
                     <ul class="list-group">
                         @foreach($game->players as $player)
-                            <li style="border-bottom:none; margin-bottom:0; padding-bottom:0;" class="list-group-item" id="player-{{ $player->user->id }}">{{ $player->user->name }}</li>
+                            <li style="border-bottom:none; margin-bottom:0; padding-bottom:0;" class="list-group-item" id="player-{{ $player->user->id }}">{{ $player->user->name }}@if($player->id == $game->round->current_turn->player_id)&nbsp;<i class="fa fa-crown"></i>@endif</li>
                             <li style="border-top:none; padding-top:0; margin-top:0;" class="list-group-item" id="player-points-{{ $player->user->id }}"><i style="font-size:9pt">{{ $player->score() }} pont</i></li>
                         @endforeach
                     </ul>
@@ -23,14 +23,14 @@
             <div class="card" id="ready" @if($game->round->current_turn->winning_play==null) style="display:none;" @endif>
                 <a href="#" class="btn btn-block btn-primary" id="ready-button">
                     <div class="card-body">
-                        Kész
+                        Kész <span id="timer" style="font-weight:bold;"></span>
                     </div>
                 </a>
             </div>
         </div>
-        <div class="col-md-8">
-            <div class="row justify-content-center" id="winner-row" @if($game->round->current_turn->winning_play==null) style="display:none;" @endif>
-                <div class="col-lg-6">
+        <div class="col-lg-8">
+            <div class="row" id="winner-row" @if($game->round->current_turn->winning_play==null) style="display:none;" @endif>
+                <div class="col-lg-6 offset-lg-3">
                     <h4 style="text-align:center;">Nyertes</h4>
                     <div class="card" id="black-card">
                         <div id="winner" class="card-body" @if($game->round->current_turn->winning_play==null) style="display:none;" @endif>
@@ -41,7 +41,11 @@
                                     @endforeach
                                 @endif
                             </h5>
-                            <h6 class="card-subtitle" id="winner-name" style="text-align:right;"></h6>
+                            <h6 class="card-subtitle" id="winner-name" style="text-align:right;">
+                                @if($game->round->current_turn->winning_play!=null)
+                                    {{ $game->round->current_turn->winning_play->player->user->name }}
+                                @endif
+                            </h6>
                         </div>
                     </div>
                 </div>
@@ -136,16 +140,33 @@
         channel.bind('turn-finished', function(data){
             let winning_id = data.message.id;
             let winning_text = data.message.text;
+            let winning_name = data.message.name;
+            let time_left = parseInt(data.message.time_left)*1000;
 
             $('#winner').css('display','block');
             $('#winner-row').css('display','block');
             $('#winner-text').html(winning_text);
+            $('#winner-name').html(winning_name);
 
             $('#play-block-' + winning_id).css('display','none');
             $('#title-text').html('Többi beadás');
             $('#ready').css('display','block');
             $('#player-points-' + data.message.player_id).html("<i style='font-size:9pt'>" + data.message.winner_points + " pont</i>");
+            startCountdown(time_left);
         });
+
+        function startCountdown(time_left) {
+            setInterval(function(){
+                $('#timer').html(time_left/1000);
+                console.log(time_left);
+                time_left = time_left-1000;
+            }, 1000);
+            setTimeout(function(){
+                $('#ready-button').click();
+                $('#ready-button').removeClass('btn-primary');
+                $('#ready-button').addClass('btn-default');
+            }, time_left+1000);
+        }
 
         channel.bind('start-load', function(){
             $('#waiting-for-game').modal('show');
@@ -183,5 +204,19 @@
             text += `.`;
             $('#wait-text').html(text);
         },1000);
+        @if($time_left<=0)
+            $('#ready-button').click();
+        @endif
+        @if($time_left<time()-10)
+            let time_left = parseInt({{ $time_left }})+1;
+            setInterval(function(){
+                time_left--;
+                $('#timer').html(time_left);
+                console.log(time_left);
+            }, 1000);
+            setTimeout(function(){
+                $('#ready-button').click();
+            }, (time_left+1)*1000);
+        @endif
     </script>
 @endpush

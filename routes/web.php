@@ -43,6 +43,8 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('{slug}/finished/{page?}', 'GameController@finished')->name('finished');
 
         Route::get('{slug}', 'GameController@play')->name('play');
+
+        Route::post('{slug}/lobby/ready', 'GameController@readyLobbyToggle')->name('lobby.ready');
     });
 
 });
