@@ -144,7 +144,7 @@ class GameController extends Controller
             abort(404);
         }
 
-        if($game->started == true && Auth::user()->game()->id == $game->id) {
+        if($game->started == true && Auth::user()->game()!=null && Auth::user()->game()->id == $game->id) {
             return redirect()->route('game.play', ['slug' => $slug]);
         }
 

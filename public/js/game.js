@@ -1,4 +1,4 @@
-var pusher = new Pusher('c294b79228fa69e9f4f5', {
+var pusher = new Pusher($('#pusher').val(), {
     cluster: 'eu',
     forceTLS: true
 });

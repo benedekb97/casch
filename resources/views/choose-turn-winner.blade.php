@@ -3,6 +3,7 @@
 @section('title','Nyertes kiválasztása')
 
 @section('content')
+    <input type="hidden" id="pusher" value="{{ env('PUSHER_APP_KEY') }}">
     <h2>Válassz nyertest!</h2>
     <input type="hidden" id="slug" value="{{ $game->slug }}">
     <div class="row justify-content-center">

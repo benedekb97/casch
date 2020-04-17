@@ -8,6 +8,7 @@
     <input type="hidden" id="go-to-url" value="{{ route('game.play', ['slug' => $game->slug]) }}">
     <input type="hidden" id="slug" value="{{ $game->slug }}">
     <input type="hidden" id="_token" value="{{ csrf_token() }}">
+    <input type="hidden" id="pusher" value="{{ env('PUSHER_APP_KEY') }}">
     <div class="row">
         <div class="col-lg-4">
             <div class="card" style="margin-bottom:20px;">
@@ -119,7 +120,7 @@
             $('#ready').css('display','none');
         });
 
-        let pusher = new Pusher('c294b79228fa69e9f4f5', {
+        let pusher = new Pusher($('#pusher').val(), {
             cluster: 'eu',
             forceTLS: true
         });

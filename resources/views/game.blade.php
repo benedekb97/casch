@@ -3,6 +3,7 @@
 @section('title', 'Game')
 
 @section('content')
+    <input type="hidden" id="pusher" value="{{ env('PUSHER_APP_KEY') }}">
     <div class="row">
         <div class="col-md-4 offset-md-4">
             <div class="alert alert-dismissible alert-warning">

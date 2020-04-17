@@ -11,6 +11,7 @@
     <input type="hidden" id="cards_needed" value="">
     <input type="hidden" id="answers_given" value="0">
     <input type="hidden" id="slug" value="{{ $game->slug }}">
+    <input type="hidden" id="pusher" value="{{ env('PUSHER_APP_KEY') }}">
     @if(Auth::user()->player()->id == $game->round->current_turn->host->id)
         <input type="hidden" id="choose_winner_url" value="{{ route('game.choose_turn_winner', ['game' => $game]) }}">
     @endif
