@@ -37,16 +37,18 @@
         </div>
 
         @foreach($games as $game)
+            @if($game->getPlayers()->count()!=0)
             <div class="col-md-4" style="margin-bottom:15px;">
                 <div class="card">
                     <a href="{{ route('admin.games.view', ['game'=> $game]) }}" class="card-link-black">
-                        <div class="card-body">
+                        <div class="card-body @if($game->deleted_at!=null) bg-success @elseif($game->started) bg-warning text-dark @else bg-danger @endif">
                             <h4 class="card-title card-title-no-margin">{{ $game->created_at }}</h4>
                             <p style="margin-bottom:0;">{{ $game->getPlayers()->count() }} játékos</p>
                         </div>
                     </a>
                 </div>
             </div>
+            @endif
         @endforeach
         <div class="col-md-12">
             <div class="row justify-content-center" style="margin-top:15px;">
