@@ -22,7 +22,7 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('leave/{slug?}', 'GameController@leave')->name('leave');
 
     Route::group(['prefix' => 'games', 'as' => 'games.'], function(){
-        Route::get('', 'GamesController@index')->name('index');
+        Route::get('{page?}', 'GamesController@index')->name('index');
         Route::get('{game}', 'GamesController@game')->name('game');
     });
 
