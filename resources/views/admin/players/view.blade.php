@@ -33,9 +33,11 @@
                 </div>
                 <div class="card-body">
                     <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link bg-danger" href="#" data-toggle="modal" data-target="#deal">Kártyák újraosztása</a>
-                        </li>
+                        @if($player->cards != null)
+                            <li class="nav-item">
+                                <a class="nav-link bg-danger" href="#" data-toggle="modal" data-target="#deal">Kártyák újraosztása</a>
+                            </li>
+                        @endif
                     </ul>
                 </div>
             </div>
