@@ -33,7 +33,7 @@
                 </div>
                 <div class="card-body">
                     <ul class="nav flex-column">
-                        @if($player->cards != null)
+                        @if($player->cards()->count()!=0)
                             <li class="nav-item">
                                 <a class="nav-link bg-danger" href="#" data-toggle="modal" data-target="#deal">Kártyák újraosztása</a>
                             </li>
