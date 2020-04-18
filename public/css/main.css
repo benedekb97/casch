@@ -27,6 +27,26 @@ h1.page-header{
     margin-bottom:50px;
 }
 
+h1.page-header.with-description{
+    margin-bottom:0;
+}
+
+h2.page-description{
+    margin-bottom:30px;
+    font-size:20px;
+    line-height:20px;
+    margin-top:0;
+    color:rgba(255,255,255,0.6);
+}
+
+.card-title.card-top{
+    margin-bottom:-12px;
+}
+
+.card-title.card-title-no-margin{
+    margin-bottom:0;
+}
+
 span.sch{
     color:rgba(10,59,102,1);
     text-shadow:0 0 10px rgb(10,59,102);
@@ -86,16 +106,16 @@ label.input-group-text {
     color:rgba(255,255,255,0.9);
 }
 
-input.form-control {
+input.form-control, textarea.form-control{
     background:rgba(255,255,255,0.1);
     color:rgba(255,255,255,0.9);
 }
-input.form-control:read-only, input.form-control:read-only:focus {
+input.form-control:read-only, input.form-control:read-only:focus , textarea.form-control:read-only, textarea.form-control:read-only:focus{
     background:rgba(255,255,255,0.2);
     color:rgba(255,255,255,0.5);
 }
 
-input.form-control:focus {
+input.form-control:focus, textarea.form-control:focus {
     background:rgba(255,255,255,0.05);
     color:white;
 }
@@ -182,4 +202,50 @@ a.card-score:hover i{
 
 .btn-block{
     margin-bottom:15px;
+}
+
+li.nav-item{
+    border-bottom:1px solid rgba(255,255,255,0.2);
+}
+
+li.nav-item .nav-link.active{
+    background:rgba(255,255,255,0.1);
+    color:rgba(255,255,255,0.8);
+}
+
+li.nav-item .nav-link:hover{
+    background:rgba(255,255,255,0.05);
+}
+
+li.nav-item .nav-link{
+    color:white;
+}
+
+ul.nav{
+    border-radius:3px;
+    border:1px solid rgba(255,255,255,0.2);
+}
+
+.table td, .table th{
+    border-top:1px solid rgba(255,255,255,0.1);
+}
+
+.table-striped tr:nth-child(even) td, .table-striped tr:nth-child(even) th {
+    background:rgba(255,255,255,0.05);
+}
+
+.table tr:first-child td:first-child, .table tr:first-child th:first-child{
+    border-top-left-radius:3px;
+}
+
+.table tr:first-child td:last-child, .table tr:first-child th:last-child{
+    border-top-right-radius:3px;
+}
+
+.table tr:last-child td:first-child, .table tr:last-child th:first-child{
+    border-bottom-left-radius:3px;
+}
+
+.table tr:last-child td:last-child, .table tr:last-child th:last-child{
+    border-bottom-right-radius:3px;
 }

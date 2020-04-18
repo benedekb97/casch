@@ -161,4 +161,18 @@ class Game extends Model
         }
 
     }
+
+    public function getPlayers()
+    {
+        $players = Player::withTrashed()->where('game_id',$this->id)->get();
+
+        return $players;
+    }
+
+    public function getRounds()
+    {
+        $rounds = Round::withTrashed()->where('game_id', $this->id)->get();
+
+        return $rounds;
+    }
 }

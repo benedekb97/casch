@@ -50,4 +50,9 @@ class User extends Authenticatable
     {
         return $this->players->first();
     }
+
+    public function bugReports()
+    {
+        return $this->hasMany(BugReport::class);
+    }
 }

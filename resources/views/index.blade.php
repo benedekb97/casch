@@ -24,6 +24,11 @@
                     <a href="{{ route('cards.index') }}" class="btn btn-block btn-lg btn-default">Kártyák</a>
                 </div>
             @endcan
+            @group('admin')
+                <div class="col-md-4">
+                    <a href="{{ route('admin.index') }}" class="btn btn-block btn-lg btn-default">Admin</a>
+                </div>
+            @endgroup
             <div class="col-md-4">
                 <a href="{{ route('games.index') }}" class="btn btn-block btn-lg btn-default">Eddigi játékaim</a>
             </div>
@@ -70,9 +75,4 @@
         @endforeach
     </div>
     @endauth
-    <div class="row justify-content-center">
-        <div class="col-md-3" style="text-align:center;">
-            <a href="{{ route('disclaimer') }}">Dislaimer</a>
-        </div>
-    </div>
 @endsection

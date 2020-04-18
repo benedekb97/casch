@@ -75,6 +75,10 @@ channel.bind('player-ready', function(data){
     }
 });
 
+channel.bind('finished-game', function(data){
+    window.location = data.message;
+});
+
 $('#ready').on('click', function(){
     $.ajax({
         url: $('#ready_url').val(),

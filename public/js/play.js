@@ -177,3 +177,8 @@ channel.bind('play-card', function(data) {
 channel.bind('turn-finished', function(data) {
     window.location = data.message.recap_url;
 });
+
+
+channel.bind('finished-game', function(data){
+    window.location = data.message;
+});

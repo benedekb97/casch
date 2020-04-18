@@ -13,6 +13,11 @@
     <div class="container">
         <h1 class="page-header"><a style="text-decoration:none; color:white;" href="{{ route('index') }}">Cards Against <span class="sch">Schönherz</span></a></h1>
         @yield('content')
+        <div class="row justify-content-center">
+            <div class="col-md-3" style="text-align:center;">
+                <a href="{{ route('disclaimer') }}">Dislaimer</a> | <a href="{{ route('report') }}">Hibajelentés</a>
+            </div>
+        </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
     <script src="https://js.pusher.com/5.1/pusher.min.js"></script>

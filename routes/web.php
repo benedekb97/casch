@@ -52,7 +52,32 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('{play}/unfeature', 'PlayController@unfeature')->name('unfeature');
     });
 
+    Route::group([
+        'namespace' => 'Admin',
+        'prefix' => 'admin',
+        'as' => 'admin.',
+        'middleware' => 'groups:admin'
+    ], function(){
+        Route::get('','AdminController@index')->name('index');
+
+        Route::group([
+            'prefix' => 'games',
+            'as' => 'games.',
+        ], function(){
+            Route::get('','GameController@index')->name('index');
+
+            Route::get('{game}/view', 'GameController@view')->name('view');
+            Route::get('{game}/delete', 'GameController@delete')->name('delete');
+            Route::get('{game}/plays', 'GameController@plays')->name('plays');
+            Route::get('{game}/players', 'GameController@players')->name('players');
+        });
+    });
+
+    Route::get('report', 'SiteController@report')->name('report');
+    Route::post('report/submit', 'SiteController@submitReport')->name('report.submit');
+
 });
+
 
 Route::get('disclaimer', 'SiteController@disclaimer')->name('disclaimer');
 
