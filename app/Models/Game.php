@@ -176,4 +176,53 @@ class Game extends Model
 
         return $rounds;
     }
+
+    public function getPlays()
+    {
+        $all_plays = [];
+
+        $players = Player::withTrashed()->where('game_id',$this->id)->get();
+        foreach($players as $player){
+            $plays = Play::withTrashed()->where('player_id', $player->id)->get();
+            foreach($plays as $play) {
+                $all_plays[] = $play;
+            }
+        }
+
+        return collect($all_plays);
+    }
+
+    public function getPoints()
+    {
+        $points = [];
+
+        $players = Player::withTrashed()->where('game_id',$this->id)->get();
+        foreach($players as $player) {
+            $plays = Play::withTrashed()->where('player_id', $player->id)->get();
+            $player_points = 0;
+            foreach($plays as $play) {
+                $player_points += $play->points + $play->likes;
+            }
+            $points[] = [
+                'name' => $player->user->name,
+                'points' => $player_points,
+                'user_id' => $player->user->id,
+                'id' => $player->id
+            ];
+        }
+
+        $points = collect($points);
+
+        $points = $points->sort(function($a, $b){
+            if($a['points'] == $b['points']) {
+                return 0;
+            }
+
+            return ($a['points'] > $b['points']) ? -1 : 1;
+        });
+
+        $points = array_values($points->toArray());
+
+        return $points;
+    }
 }

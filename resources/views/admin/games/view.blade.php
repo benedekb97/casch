@@ -52,12 +52,15 @@
                 </div>
                 <div class="card-body">
                     <ul class="list-group">
-                        @foreach($game->getPlayers() as $player)
-                            <li class="list-group-item">
-                                {{ $player->user->name }}
-                                @if($game->host->id == $player->user->id)
+                        @foreach($game->getPoints() as $player)
+                            <li class="list-group-item" style="border-bottom:0; margin-bottom:0; padding-bottom:0;">
+                                {{ $player['name'] }}
+                                @if($game->host->id == $player['user_id'])
                                     <i data-toggle="tooltip" title="Játékvezető" class="fa fa-crown"></i>
                                 @endif
+                            </li>
+                            <li class="list-group-item" style="border-top:0; margin-top:0; padding-top:0;">
+                                <i>{{ $player['points'] }} pont</i>
                             </li>
                         @endforeach
                     </ul>
