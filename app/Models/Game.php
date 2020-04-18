@@ -198,14 +198,9 @@ class Game extends Model
 
         $players = Player::withTrashed()->where('game_id',$this->id)->get();
         foreach($players as $player) {
-            $plays = Play::withTrashed()->where('player_id', $player->id)->get();
-            $player_points = 0;
-            foreach($plays as $play) {
-                $player_points += $play->points + $play->likes;
-            }
             $points[] = [
                 'name' => $player->user->name,
-                'points' => $player_points,
+                'points' => $player->score(),
                 'user_id' => $player->user->id,
                 'id' => $player->id
             ];
