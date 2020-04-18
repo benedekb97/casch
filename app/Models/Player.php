@@ -36,7 +36,7 @@ class Player extends Model
 
     public function score()
     {
-        $plays = $this->plays;
+        $plays = Play::withTrashed()->where('player_id',$this->id)->get();
         $score = 0;
         foreach($plays as $play) {
             $score += $play->points;
