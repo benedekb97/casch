@@ -14,10 +14,10 @@
     <h1 class="page-header with-description"><a style="text-decoration:none; color:white;" href="{{ route('index') }}">Cards Against <span class="sch">Schönherz</span></a></h1>
     <h2 class="page-description">Admin felület</h2>
     <div class="row">
-        <div class="col-lg-4" style="margin-bottom:15px;">
+        <div class="col-lg-3" style="margin-bottom:15px;">
             @include('includes.admin.nav')
         </div>
-        <div class="col-lg-8">
+        <div class="col-lg-9">
             @yield('content')
         </div>
     </div>

@@ -182,3 +182,9 @@ channel.bind('turn-finished', function(data) {
 channel.bind('finished-game', function(data){
     window.location = data.message;
 });
+
+channel.bind('new-cards', function(data) {
+    if($('#user_id').val() == data.message) {
+        location.reload();
+    }
+});

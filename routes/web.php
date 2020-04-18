@@ -71,6 +71,14 @@ Route::group(['middleware' => 'auth'], function(){
             Route::get('{game}/plays', 'GameController@plays')->name('plays');
             Route::get('{game}/players', 'GameController@players')->name('players');
         });
+
+        Route::group([
+            'prefix' => 'players',
+            'as' => 'players.'
+        ], function(){
+            Route::get('{player}/view', 'PlayerController@view')->name('view');
+            Route::get('{player}/deal', 'PlayerController@deal')->name('deal');
+        });
     });
 
     Route::get('report', 'SiteController@report')->name('report');

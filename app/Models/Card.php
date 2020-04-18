@@ -23,4 +23,9 @@ class Card extends Model
     {
         return $this->belongsToMany(Player::class,'player_card','card_id','player_id');
     }
+
+    public function getTextWhite()
+    {
+        return implode('', json_decode($this->text, true));
+    }
 }

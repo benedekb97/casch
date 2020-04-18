@@ -57,4 +57,17 @@ class GameController extends Controller
 
         return redirect()->back();
     }
+
+    public function players($game)
+    {
+        $game = Game::withTrashed()->where('id',$game)->first();
+
+        if($game === null) {
+            abort(404);
+        }
+
+        return view('admin.games.players', [
+            'game' => $game
+        ]);
+    }
 }
