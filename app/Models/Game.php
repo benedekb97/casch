@@ -115,7 +115,8 @@ class Game extends Model
             }
 
             $new_cards_count = 10-$player->cards()->count();
-            $new_cards = $this->getAvailableWhiteCards()->random($new_cards_count);
+            $c = $this->getAvailableWhiteCards()->count();
+            $new_cards = $this->getAvailableWhiteCards()->random(max($c,$new_cards_count));
             foreach($new_cards as $card){
                 $player->cards()->attach($card);
             }
