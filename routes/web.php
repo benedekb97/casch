@@ -28,6 +28,7 @@ Route::group(['middleware' => 'auth'], function(){
 
     Route::group(['prefix' => 'game', 'as' => 'game.'], function(){
         Route::post('{slug}/change', 'GameController@change')->name('change');
+        Route::post('{slug}/deck', 'GameController@deck')->name('deck');
         Route::post('{game}/start', 'GameController@start')->name('start');
         Route::post('{game}/data', 'GameController@data')->name('data');
         Route::post('{game}/submit', 'GameController@submit')->name('submit');
@@ -53,12 +54,53 @@ Route::group(['middleware' => 'auth'], function(){
     });
 
     Route::group([
+        'prefix' => 'user',
+        'as' => 'user.'
+    ], function(){
+        Route::get('profile', 'UserController@profile')->name('profile');
+        Route::get('decks', 'UserController@decks')->name('decks');
+
+        Route::group([
+            'prefix' => 'decks',
+            'as' => 'decks.'
+        ], function(){
+            Route::get('create', 'DeckController@create')->name('create');
+            Route::post('save/{deck?}', 'DeckController@save')->name('save');
+
+            Route::get('{deck}/view', 'DeckController@view')->name('view');
+
+            Route::group([
+                'prefix' => 'deck',
+                'as' => 'deck.'
+            ], function(){
+                Route::get('{deck}/white/{page?}', 'DeckController@white')->name('white');
+                Route::get('{deck}/black/{page?}', 'DeckController@black')->name('black');
+
+                Route::post('{deck}/addBlack/{card?}', 'DeckController@addBlack')->name('addBlack');
+                Route::post('{deck}/addWhite/{card?}', 'DeckController@addWhite')->name('addWhite');
+                Route::post('{deck}/import', 'DeckController@import')->name('import');
+
+                Route::get('{deck}/card/{card}/remove', 'DeckController@removeCard')->name('deleteCard');
+            });
+        });
+
+        Route::group([
+            'prefix' => 'profile',
+            'as' => 'profile.'
+        ], function(){
+            Route::get('edit','UserController@edit')->name('edit');
+            Route::post('save', 'UserController@save')->name('save');
+        });
+    });
+
+    Route::group([
         'namespace' => 'Admin',
         'prefix' => 'admin',
         'as' => 'admin.',
         'middleware' => 'groups:admin'
     ], function(){
         Route::get('','AdminController@index')->name('index');
+        Route::get('base', 'AdminController@createBaseDeck')->name('base');
 
         Route::group([
             'prefix' => 'games',

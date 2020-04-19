@@ -18,29 +18,23 @@ channel.bind('join-game', function(data) {
 });
 
 channel.bind('leave-game', function(data) {
-    let player_id = data.message.id;
+    let player_id = parseInt(data.message.id);
     let new_host = data.new_host;
     let user_id = $('#user_id').val();
 
-    if(new_host !== null) {
-        let host_html = $('#player_' + new_host).html() + ` <i data-toggle="tooltip" title="Játékvezető" class="fa fa-crown"></i>`;
-        $('#player_' + new_host).html(host_html);
+    let current_player_id = parseInt($('#player_id').val());
 
-        if(new_host == $('#player_id').val()) {
-            $('#rounds').removeAttr('readonly');
-            $('#start-button').css('display','block');
-            $('#start-button').html(`<button style="margin-top:10px;" type="button" class="btn btn-block btn-primary" id="start">Indítás</button>`);
-        }else{
-            $('#start-button').css('display','none');
-            $('#rounds').attr('readonly','readonly');
+    console.log(player_id , current_player_id);
+    if(player_id == current_player_id){
+        $('#player_' + player_id).remove();
+    }else{
+        if(new_host !== null){
+            location.reload();
         }
-
     }
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-    });
 
     $('#player_' + player_id).remove();
+
 });
 
 channel.bind('edit-game', function(data) {
@@ -77,6 +71,11 @@ channel.bind('player-ready', function(data){
 
 channel.bind('finished-game', function(data){
     window.location = data.message;
+});
+
+channel.bind('change-deck', function(data){
+    console.log(data);
+    $('#deck').val(data.message);
 });
 
 $('#ready').on('click', function(){
@@ -130,11 +129,35 @@ $('#start').on('click', function(){
             _token: $('#_token').val()
         },
         success:function(e){
-            console.log(e);
+            if(e.success == true){
+                $('#start-button').css('display','none');
+            }else if('deck' in e){
+                $('#deck-alert').css('display','block');
+                console.log('no deck selected');
+            }
         },
         error:function(e){
             console.log(e);
         }
     });
-    $('#start-button').css('display','none');
+});
+
+$('#deck').on('change', function(element){
+    let deck_id = $('#deck').val();
+
+    $.ajax({
+        url: $('#deck_change_url').val(),
+        dataType: 'json',
+        type: 'POST',
+        data:{
+            _token: $('#_token').val(),
+            deck: deck_id
+        },
+        success: function(e){
+            console.log(e);
+        },
+        error: function(e){
+            console.log(e);
+        }
+    });
 });

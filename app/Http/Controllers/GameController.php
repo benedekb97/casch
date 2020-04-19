@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ChangeDeck;
 use App\Events\EditGame;
 use App\Events\JoinGame;
 use App\Events\LeaveGame;
@@ -15,6 +16,8 @@ use App\Events\TurnPlaysFinished;
 use App\Events\TurnFinished;
 use App\Events\FinishedGame;
 use App\Models\Card;
+use App\Models\Deck;
+use App\Models\Deck as DeckAlias;
 use App\Models\Game;
 use App\Models\Player;
 use App\Models\Play;
@@ -114,11 +117,16 @@ class GameController extends Controller
             }
         }
 
+        $decks = Deck::where('public',true)
+            ->orWhere('user_id',$game->host_user_id)
+            ->get();
+
         return view('game',[
             'game' => $game,
             'player_id' => $player->id,
             'messages' => $this->messages,
-            'everyone_ready' => $everyone_ready
+            'everyone_ready' => $everyone_ready,
+            'decks' => $decks
         ]);
     }
 
@@ -177,11 +185,16 @@ class GameController extends Controller
             }
         }
 
+        $decks = Deck::where('user_id',$game->host_user_id)
+            ->orWhere('public',true)
+            ->get();
+
         return view('game', [
             'game' => $game,
             'player_id' => $player->id,
             'messages' => $this->messages,
-            'everyone_ready' => $everyone_ready
+            'everyone_ready' => $everyone_ready,
+            'decks' => $decks
         ]);
     }
 
@@ -200,11 +213,7 @@ class GameController extends Controller
         $next_host = $game->players->first();
 
         if($game != null && $next_host != null) {
-            if($game->host_user_id == Auth::id()){
-                event(new LeaveGame(['id' => $player_id, 'name' => Auth::user()->name],$game->slug, $next_host->id));
-            }else{
-                event(new LeaveGame(['id' => $player_id, 'name' => Auth::user()->name],$game->slug));
-            }
+            event(new LeaveGame(['id' => $player_id, 'name' => Auth::user()->name],$game->slug, $next_host->id));
         }
 
         if($next_host == null) {
@@ -253,6 +262,10 @@ class GameController extends Controller
             return response()->json(['success' => false]);
         }
 
+        if($game->deck === null) {
+            return response()->json(['success' => false, 'deck' => true]);
+        }
+
         event(new StartLoad(null, $game->slug));
 
         foreach($game->players as $player)
@@ -264,7 +277,7 @@ class GameController extends Controller
         $all_players = $game->players;
         $first_host = $all_players->random();
 
-        $cards = Card::all();
+        $cards = $game->whiteCards();
 
         $round = new Round();
         $round->game_id = $game->id;
@@ -273,7 +286,7 @@ class GameController extends Controller
 
         $turn = new Turn();
         $turn->player_id = $first_host->id;
-        $turn->card_id = $cards->where('type','black')->random()->id;
+        $turn->card_id = $game->blackCards()->random()->id;
         $turn->round_id = $round->id;
         $turn->save();
 
@@ -281,7 +294,7 @@ class GameController extends Controller
         $round->save();
 
         foreach($all_players as $player) {
-            $player_cards = $cards->where('type','white')->random(10);
+            $player_cards = $cards->random(10);
             foreach($player_cards as $card) {
                 $player->cards()->attach($card);
                 $cards = $cards->filter(function($item) use ($card){
@@ -728,6 +741,32 @@ class GameController extends Controller
             'id' => Auth::user()->player()->id,
             'everyone_ready' => $everyone_ready
         ], $slug));
+
+        return response()->json(['success' => true]);
+    }
+
+    public function deck($slug, Request $request)
+    {
+        $game = Game::where('slug',$slug)->first();
+
+        if($game === null) {
+            abort(404);
+        }
+
+        if(Auth::id() !== $game->host_user_id) {
+            abort(403);
+        }
+
+        $deck = Deck::where('id',$request->input('deck'))->first();
+
+        if($deck === null || (!$deck->public && $deck->user_id != Auth::id())) {
+            return response()->json(['success' => false]);
+        }
+
+        $game->deck_id = $deck->id;
+        $game->save();
+
+        event(new ChangeDeck($deck->id, $game->slug));
 
         return response()->json(['success' => true]);
     }

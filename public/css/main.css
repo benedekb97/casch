@@ -106,18 +106,27 @@ label.input-group-text {
     color:rgba(255,255,255,0.9);
 }
 
-input.form-control, textarea.form-control{
+input.form-control, textarea.form-control, select.form-control{
     background:rgba(255,255,255,0.1);
     color:rgba(255,255,255,0.9);
 }
-input.form-control:read-only, input.form-control:read-only:focus , textarea.form-control:read-only, textarea.form-control:read-only:focus{
+input.form-control:read-only, input.form-control:read-only:focus , textarea.form-control:read-only, textarea.form-control:read-only:focus, select.form-control:disabled{
     background:rgba(255,255,255,0.2);
     color:rgba(255,255,255,0.5);
 }
 
-input.form-control:focus, textarea.form-control:focus {
+input.form-control:focus, textarea.form-control:focus, select.form-control:focus {
     background:rgba(255,255,255,0.05);
     color:white;
+}
+
+option{
+    color:black;
+}
+
+option:disabled, option:hover{
+    background:rgba(0,0,0,0.2);
+    color:rgba(0,0,0,0.9);
 }
 
 h4.modal-title{

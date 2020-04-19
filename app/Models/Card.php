@@ -28,4 +28,14 @@ class Card extends Model
     {
         return implode('', json_decode($this->text, true));
     }
+
+    public function getTextBlack()
+    {
+        return implode('____', json_decode($this->text, true));
+    }
+
+    public function decks()
+    {
+        return $this->belongsToMany(Deck::class, 'card_deck', 'card_id','deck_id');
+    }
 }

@@ -10,6 +10,21 @@ class Game extends Model
 {
     use SoftDeletes;
 
+    public function cards()
+    {
+        return $this->deck->cards;
+    }
+
+    public function whiteCards()
+    {
+        return $this->deck->WhiteCards();
+    }
+
+    public function blackCards()
+    {
+        return $this->deck->BlackCards();
+    }
+
     public function players()
     {
         return $this->hasMany(Player::class, 'game_id');
@@ -63,7 +78,7 @@ class Game extends Model
     {
         $used_black_cards = $this->getUsedBlackCards();
 
-        $cards = Card::where('type','black')->get();
+        $cards = $this->blackCards();
         foreach($used_black_cards as $black_card) {
             $cards = $cards->where('id','!=',$black_card->id);
         }
@@ -73,7 +88,7 @@ class Game extends Model
         return $cards;
     }
 
-    public function getUsedWhiteCards()
+    public function getUsedWhiteCards($ignore_previously_played = true)
     {
         $cards = [];
         foreach($this->players as $player){
@@ -82,13 +97,23 @@ class Game extends Model
             }
         }
 
+        if($ignore_previously_played){
+            foreach($this->players as $player){
+                foreach($player->plays as $play){
+                    foreach($play->cards as $card){
+                        $cards[] = $card;
+                    }
+                }
+            }
+        }
+
         return $cards;
     }
 
-    public function getAvailableWhiteCards()
+    public function getAvailableWhiteCards($ignore_previously_played = true)
     {
-        $previous_cards = $this->getUsedWhiteCards();
-        $white_cards = Card::all()->where('type','white');
+        $previous_cards = $this->getUsedWhiteCards($ignore_previously_played);
+        $white_cards = $this->whiteCards();
         foreach($previous_cards as $card) {
             $white_cards = $white_cards->where('id','!=',$card->id);
         }
@@ -116,7 +141,13 @@ class Game extends Model
 
             $new_cards_count = 10-$player->cards()->count();
             $c = $this->getAvailableWhiteCards()->count();
-            $new_cards = $this->getAvailableWhiteCards()->random(min($c,$new_cards_count));
+            if($c<$new_cards_count){
+                $c = $this->getAvailableWhiteCards(false)->count();
+                $ignore = false;
+            }else{
+                $ignore = true;
+            }
+            $new_cards = $this->getAvailableWhiteCards($ignore)->random(min($c,$new_cards_count));
             foreach($new_cards as $card){
                 $player->cards()->attach($card);
             }
@@ -219,5 +250,10 @@ class Game extends Model
         $points = array_values($points->toArray());
 
         return $points;
+    }
+
+    public function deck()
+    {
+        return $this->belongsTo(Deck::class, 'deck_id');
     }
 }

@@ -4,6 +4,7 @@
 
 @section('content')
     <input type="hidden" id="pusher" value="{{ env('PUSHER_APP_KEY') }}">
+    <input type="hidden" id="deck_change_url" value="{{ route('game.deck', ['slug' => $game->slug]) }}">
     <div class="row">
         <div class="col-md-3">
             <div class="card">
@@ -32,11 +33,26 @@
             <div class="card" style="margin-bottom:15px;">
                 <div class="card-body">
                     <h5 class="card-title">Beállítások</h5>
-                    <div class="input-group">
+                    <div class="form-group">
+                        <div class="input-group">
                         <span class="input-group-prepend">
                             <label class="input-group-text" for="rounds">Körök száma</label>
                         </span>
-                        <input class="form-control" @if($game->host->id != Auth::id()) readonly @endif style="width:50px; text-align:center;" type="number" id="rounds" placeholder="Körök" value="{{ $game->number_of_rounds ? $game->number_of_rounds : 3 }}">
+                            <input class="form-control" @if($game->host->id != Auth::id()) readonly @endif style="width:50px; text-align:center;" type="number" id="rounds" placeholder="Körök" value="{{ $game->number_of_rounds ? $game->number_of_rounds : 3 }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                        <span class="input-group-prepend">
+                            <label class="input-group-text" for="deck">Pakli</label>
+                        </span>
+                            <select class="form-control" @if($game->host->id != Auth::id()) disabled @endif name="deck" id="deck">
+                                <option selected disabled>Válassz egyet!</option>
+                                @foreach($decks as $deck)
+                                    <option @if($game->deck_id == $deck->id) selected @endif id="deck-{{ $deck->id }}" value="{{ $deck->id }}">{{ $deck->name }} - {{ $deck->user->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="input-group" id="start-button">
                         @if($game->host->id == Auth::id())
@@ -48,6 +64,12 @@
                                 <button style="margin-top:10px" type="button" class="btn btn-block btn-default" id="ready">Unready</button>
                             @endif
                         @endif
+                    </div>
+                    <div class="input-group">
+                        <div id="#deck-alert" class="alert alert-warning show hide alert-dismissible" style="width:100%; display:none;">
+                            <p style="margin-bottom:0;" class="text-dark"><i class="fa fa-exclamation-triangle"></i> Nem választottál paklit!</p>
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        </div>
                     </div>
                 </div>
             </div>

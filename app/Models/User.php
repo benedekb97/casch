@@ -55,4 +55,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(BugReport::class);
     }
+
+    public function decks()
+    {
+        return $this->hasMany(Deck::class, 'user_id');
+    }
 }

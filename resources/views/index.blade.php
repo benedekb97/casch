@@ -32,6 +32,9 @@
             <div class="col-md-4">
                 <a href="{{ route('games.index') }}" class="btn btn-block btn-lg btn-default">Eddigi játékaim</a>
             </div>
+            <div class="col-md-4">
+                <a href="{{ route('user.profile') }}" class="btn btn-block btn-lg btn-default">Profilom</a>
+            </div>
         @else
             <div class="col-md-4">
                 <a href="{{ route('login') }}" class="btn btn-block btn-lg btn-default">Bejelentkezés</a>
