@@ -66,7 +66,7 @@
                         @endif
                     </div>
                     <div class="input-group">
-                        <div id="#deck-alert" class="alert alert-warning show hide alert-dismissible" style="width:100%; display:none;">
+                        <div id="deck-alert" class="alert alert-warning show hide alert-dismissible" style="width:100%; display:none;">
                             <p style="margin-bottom:0;" class="text-dark"><i class="fa fa-exclamation-triangle"></i> Nem választottál paklit!</p>
                             <button type="button" class="close" data-dismiss="alert">&times;</button>
                         </div>
