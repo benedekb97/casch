@@ -68,7 +68,7 @@
                     <div class="card" id="black-card">
                         <div class="card-body">
                             <h5 class="card-title">{!! $play->getTextHTML() !!}</h5>
-                            <p style="text-align:right; font-size:10pt;">{{ $play->getPlayer()->user->name }}</p>
+                            <p style="text-align:right; font-size:10pt;">{{ $play->getPlayer()->user->nickname ? $play->getPlayer()->user->nickname : $play->getPlayer()->user->name }}</p>
                         </div>
                     </div>
                 @if(in_array(Auth::id(),$play->getUsers()))

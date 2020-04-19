@@ -170,7 +170,7 @@ class GameController extends Controller
             $player->game_id = $game->id;
             $player->save();
 
-            event(new JoinGame(['id' => $player->id, 'name' => Auth::user()->name], $slug));
+            event(new JoinGame(['id' => $player->id, 'name' => Auth::user()->name, 'nickname' => Auth::user()->nickname], $slug));
         }else{
             $player = Auth::user()->player();
         }
@@ -624,8 +624,10 @@ class GameController extends Controller
                 $player_points += $play->points + $play->likes;
                 $all_plays[] = $play;
             }
+            $name = $player->user->nickname ? $player->user->nickname : $player->user->name;
+
             $points[] = [
-                'name' => $player->user->name,
+                'name' => $name,
                 'points' => $player_points
             ];
 

@@ -15,7 +15,7 @@
                 <div class="card-body">
                     <ul class="list-group">
                         @foreach($game->players as $player)
-                            <li style="border-bottom:none; margin-bottom:0; padding-bottom:0;" class="list-group-item" id="player-{{ $player->user->id }}">{{ $player->user->name }}@if($player->id == $game->round->current_turn->player_id)&nbsp;<i class="fa fa-crown"></i>@endif</li>
+                            <li style="border-bottom:none; margin-bottom:0; padding-bottom:0;" class="list-group-item" id="player-{{ $player->user->id }}">@if($player->user->nickname) {{ $player->user->nickname }} @else {{ $player->user->name }} @endif @if($player->id == $game->round->current_turn->player_id)&nbsp;<i class="fa fa-crown"></i>@endif</li>
                             <li style="border-top:none; padding-top:0; margin-top:0;" class="list-group-item" id="player-points-{{ $player->user->id }}"><i style="font-size:9pt">{{ $player->score() }} pont</i></li>
                         @endforeach
                     </ul>

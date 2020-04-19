@@ -49,7 +49,7 @@
                             <select class="form-control" @if($game->host->id != Auth::id()) disabled @endif name="deck" id="deck">
                                 <option selected disabled>Válassz egyet!</option>
                                 @foreach($decks as $deck)
-                                    <option @if($game->deck_id == $deck->id) selected @endif id="deck-{{ $deck->id }}" value="{{ $deck->id }}">{{ $deck->name }} - {{ $deck->user->name }}</option>
+                                    <option @if($game->deck_id == $deck->id) selected @endif id="deck-{{ $deck->id }}" value="{{ $deck->id }}">{{ $deck->name }} - @if($deck->user->nickname){{ $deck->user->nickname }}@else {{ $deck->user->name }} @endif</option>
                                 @endforeach
                             </select>
                         </div>
@@ -80,7 +80,7 @@
                     <h5 class="card-title">Résztvevők</h5>
                     <ul class="list-group" id="user-list">
                         @foreach($game->players as $player)
-                            <li @if($player->user->id == Auth::id()) data-toggle="tooltip" title="Ez vagy Te!" style="font-weight:bold; background:rgba(255,255,255,0.2);" @endif class="list-group-item" id="player_{{ $player->id }}">{{ $player->user->name }}@if($player->user->id == $game->host->id) <i data-toggle="tooltip" title="Játékvezető" class="fa fa-crown"></i>@endif
+                            <li @if($player->user->id == Auth::id()) data-toggle="tooltip" title="Ez vagy Te!" style="font-weight:bold; background:rgba(255,255,255,0.2);" @endif class="list-group-item" id="player_{{ $player->id }}">@if($player->user->nickname) {{ $player->user->nickname }} @else {{ $player->user->name }} @endif @if($player->user->id == $game->host->id) <i data-toggle="tooltip" title="Játékvezető" class="fa fa-crown"></i>@endif
                                 @if($player->user->id != $game->host->id)
                                     @if($player->ready)
                                         &nbsp;<i id="ready-{{ $player->id }}" class="fa fa-check" style="display:inline"></i>

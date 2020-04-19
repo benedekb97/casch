@@ -8,7 +8,13 @@ let slug = $('#slug').val();
 var channel = pusher.subscribe('game-' + slug);
 channel.bind('join-game', function(data) {
     let html = $('#user-list').html();
-    html += `<li class="list-group-item" id="player_${data.message.id}">${data.message.name}&nbsp;<i id="ready-${data.message.id}" class="fa fa-check" style="display:none"></i></li>`;
+    let name;
+    if(data.message.nickname != null) {
+        name = data.message.nickname;
+    }else{
+        name = data.message.name;
+    }
+    html += `<li class="list-group-item" id="player_${data.message.id}">${name}&nbsp;<i id="ready-${data.message.id}" class="fa fa-check" style="display:none"></i></li>`;
 
     $('#user-list').html(html);
     $(function () {

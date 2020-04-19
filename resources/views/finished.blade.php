@@ -74,7 +74,9 @@
                                         <div class="card" id="black-card">
                                             <div class="card-body" @if($play->points>0) style="background-color:rgba(255,255,255,0.1);" @endif>
                                                 <h5 class="card-title">{!! $play->getTextHTML() !!}</h5>
-                                                <p style="text-align:right; font-size:11pt; line-height:11pt;">@if($play->getPlayer()->user_id == Auth::id())<b>@endif{{ $play->getPlayer()->user->name }}@if($play->getPlayer()->user_id == Auth::id())</b>@endif</p>
+                                                <p style="text-align:right; font-size:11pt; line-height:11pt;">@if($play->getPlayer()->user_id == Auth::id())<b>@endif
+                                                        {{ $play->getPlayer()->user->nickname ? $play->getPlayer()->user->nickname : $play->getPlayer()->user->name }}
+                                                        @if($play->getPlayer()->user_id == Auth::id())</b>@endif</p>
                                             </div>
                                             @if($play->points==0)
                                                 <div class="card-footer" style="line-height:10pt;">
