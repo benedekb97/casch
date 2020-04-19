@@ -790,6 +790,10 @@ class GameController extends Controller
 
         Auth::user()->player()->cards()->detach();
         Auth::user()->player()->delete();
+        if($game->host_user_id == Auth::id()) {
+            $game->host_user_id = $game->users->random()->id;
+            $game->save();
+        }
         event(new LeaveGame(Auth::id(), $game->slug));
 
         if($game->players()->count() < 2) {
