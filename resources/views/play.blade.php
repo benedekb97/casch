@@ -21,6 +21,15 @@
                 <div class="card-header">Kör: {{ $game->round->number }}/{{ $game->number_of_rounds }}<br>Játék: {{ $game->round->turns()->count() }}/{{ $game->players()->count() }}</div>
                 <div class="card-body" id="players"></div>
             </div>
+            @if($game->round->current_turn->host->user->id !== Auth::id())
+                <div class="card" style="margin-bottom:15px;">
+                    <a href="#" class="btn btn-default btn-block" data-toggle="modal" data-target="#leave-game">
+                        <div class="card-body" style="font-size:15pt">
+                            Kilépés <i class="fa fa-door-open"></i>
+                        </div>
+                    </a>
+                </div>
+            @endif
             <div class="card" id="submit-button" style="display:none; margin-bottom:15px;">
                 <a href="#" class="btn btn-primary btn-block" id="submit-link">
                     <div class="card-body" style="font-size:15pt;">
@@ -61,4 +70,27 @@
             </div>
         </div>
     </div>
+    @if($game->round->current_turn->host->user->id !== Auth::id())
+        <div class="modal fade" id="leave-game">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Biztos kilépsz?</h4>
+                        <button class="close" data-dismiss="modal" type="button">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Ha most kilépsz a játékból nem fogsz tudni visszalépni!</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            Mégse <i class="fa fa-times"></i>
+                        </button>
+                        <a href="{{ route('game.leave') }}" class="btn btn-danger">
+                            Kilépek <i class="fa fa-door-open"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 @endpush

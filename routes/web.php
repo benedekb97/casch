@@ -27,6 +27,7 @@ Route::group(['middleware' => 'auth'], function(){
     });
 
     Route::group(['prefix' => 'game', 'as' => 'game.'], function(){
+        Route::get('leave', 'GameController@leaveGame')->name('leave');
         Route::post('{slug}/change', 'GameController@change')->name('change');
         Route::post('{slug}/deck', 'GameController@deck')->name('deck');
         Route::post('{game}/start', 'GameController@start')->name('start');

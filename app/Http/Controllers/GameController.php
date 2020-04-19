@@ -348,10 +348,15 @@ class GameController extends Controller
         $cards = Auth::user()->player()->cards;
         $black_card = $game->round->current_turn->card;
         $host = $game->round->current_turn->host->user->id;
-        $players = $game->users->where('deleted_at',null)->all();
+        $users = $game->players->all();
         $played = $game->round->current_turn->players_played;
         $play = Auth::user()->player()->plays->where('turn_id', $game->round->current_turn->id)->first();
         $scores = [];
+
+        $players = [];
+        foreach($users as $player){
+            $players[] = $player->user;
+        }
 
         foreach($players as $player) {
             $scores[$player->id] = $player->player()->score();
@@ -769,5 +774,46 @@ class GameController extends Controller
         event(new ChangeDeck($deck->id, $game->slug));
 
         return response()->json(['success' => true]);
+    }
+
+    public function leaveGame()
+    {
+        $game = Game::where('id',Auth::user()->player()->game_id)->first();
+
+        if($game === null) {
+            abort(404);
+        }
+
+        if($game->round->current_turn->host->user->id === Auth::id()){
+            abort(403);
+        }
+
+        Auth::user()->player()->cards()->detach();
+        Auth::user()->player()->delete();
+        event(new LeaveGame(Auth::id(), $game->slug));
+
+        if($game->players()->count() < 2) {
+            $players = $game->players;
+            foreach($players as $player) {
+                $player->plays()->delete();
+                $player->cards()->detach();
+                $player->delete();
+            }
+
+            foreach($game->rounds as $round) {
+                $round->turns()->delete();
+                $round->delete();
+            }
+            event(new FinishedGame(route('game.finished', ['slug' => $game->slug]), $game->slug));
+            $game->delete();
+
+            return redirect()->route('game.finished', ['slug' => $game->slug]);
+        }
+
+        if($game->round->current_turn->everyonePlayed()){
+            event(new TurnPlaysFinished(['host_id' => $game->round->current_turn->host->user->id, 'recap_url' => route('game.turn.recap', ['game' => $game])], $game->slug));
+        }
+
+        return redirect()->route('index');
     }
 }

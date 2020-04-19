@@ -183,6 +183,11 @@ channel.bind('finished-game', function(data){
     window.location = data.message;
 });
 
+channel.bind('leave-game', function(data){
+    $('#player-' + data.message).css('display','none');
+    $('#player-score-' + data.message).css('display','none');
+});
+
 channel.bind('new-cards', function(data) {
     if($('#user_id').val() == data.message) {
         location.reload();
