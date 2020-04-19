@@ -3,6 +3,9 @@
 @section('title','Cards Against Schönherz')
 
 @section('content')
+    <audio id="pop">
+        <source src="{{ asset('audio/pop.mp3') }}" type="audio/mpeg">
+    </audio>
     <h1>Turn recap</h1>
     <input type="hidden" id="ready-url" value="{{ route('game.ready', ['game' => $game]) }}">
     <input type="hidden" id="go-to-url" value="{{ route('game.play', ['slug' => $game->slug]) }}">
@@ -133,6 +136,8 @@
             let player = $('#player-' + data.message).html();
             player += ` <i class="fa fa-check"></i>`;
             $('#player-' + data.message).html(player);
+            $('audio#pop')[0].currentTime = 0;
+            $('audio#pop')[0].play();
         });
 
         channel.bind('finished-game', function(data){
@@ -162,7 +167,7 @@
             $('#title-text').html('Többi beadás');
             $('#ready').css('display','block');
             $('#player-points-' + data.message.player_id).html("<i style='font-size:9pt'>" + data.message.winner_points + " pont</i>");
-            if(data.messaage.ready != 1){
+            if(data.messaage.ready != true){
                 startCountdown(time_left);
             }
         });
@@ -172,6 +177,10 @@
                 $('#timer').html(time_left/1000);
                 console.log(time_left);
                 time_left = time_left-1000;
+                if(time_left<5000){
+                    $('audio#pop')[0].currentTime = 0;
+                    $('audio#pop')[0].play();
+                }
             }, 1000);
             setTimeout(function(){
                 $('#ready-button').click();

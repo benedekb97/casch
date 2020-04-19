@@ -178,6 +178,8 @@ channel.bind('play-card', function(data) {
         location.reload();
     }
     $('#player-score-' + data.message).css('background','rgba(255,255,255,0.2)');
+    $('audio#pop')[0].currentTime = 0;
+    $('audio#pop')[0].play();
 });
 
 channel.bind('turn-finished', function(data) {

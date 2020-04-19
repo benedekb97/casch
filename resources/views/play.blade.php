@@ -3,6 +3,9 @@
 @section('title','Cards Against Schönherz')
 
 @section('content')
+    <audio id="pop">
+        <source src="{{ asset('audio/pop.mp3') }}" type="audio/mpeg">
+    </audio>
     <input type="hidden" id="_token" value="{{ csrf_token() }}">
     <input type="hidden" id="get_data_url" value="{{ route('game.data', ['game' => $game]) }}">
     <input type="hidden" id="submit_url" value="{{ route('game.submit', ['game' => $game]) }}">
