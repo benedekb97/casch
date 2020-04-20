@@ -110,7 +110,7 @@ class Game extends Model
         return $cards;
     }
 
-    public function getAvailableWhiteCards($ignore_previously_played = true)
+    public function getAvailableWhiteCards($ignore_previously_played = false)
     {
         $previous_cards = $this->getUsedWhiteCards($ignore_previously_played);
         $white_cards = $this->whiteCards();
