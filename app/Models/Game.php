@@ -138,9 +138,13 @@ class Game extends Model
             if(!$hosts_so_far->find($player->id)) {
                 $new_round = false;
             }
+            
+            if($this->round->current_turn->player_id == $player->id){
+                continue;
+            }
 
             $new_cards_count = 10-$player->cards()->count();
-            if($new_cards_count<0){
+            if($new_cards_count<0 || $new_cards_count>2){
                 continue;
             }
             $c = $this->getAvailableWhiteCards()->count();
