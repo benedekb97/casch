@@ -140,6 +140,9 @@ class Game extends Model
             }
 
             $new_cards_count = 10-$player->cards()->count();
+            if($new_cards_count<0){
+                continue;
+            }
             $c = $this->getAvailableWhiteCards()->count();
             $new_cards = $this->getAvailableWhiteCards()->random(min($c,$new_cards_count));
             foreach($new_cards as $card){
