@@ -129,7 +129,7 @@ class LoginController extends Controller
     {
         if($request->input('email') && $request->input('password') && $request->input('name')){
 
-            if(User::where('email',$request->input('email')->get()->count() > 0)) {
+            if(User::all()->where('email',$request->input('email'))->count() > 0){
                 abort(400);
             }
 
