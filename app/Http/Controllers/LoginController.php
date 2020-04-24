@@ -128,6 +128,8 @@ class LoginController extends Controller
 
     public function register(Request $request)
     {
+        return response()->json(['Regisztráció ideiglenesen kikapcsolva']);
+
         if($request->input('email') && $request->input('password') && $request->input('name')){
 
             if(User::all()->where('email',$request->input('email'))->count() > 0){
