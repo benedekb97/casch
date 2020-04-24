@@ -39,6 +39,9 @@
             <div class="col-md-4">
                 <a href="{{ route('login') }}" class="btn btn-block btn-lg btn-default">Bejelentkezés</a>
             </div>
+            <div class="col-md-4">
+                <a href="{{ route('register') }}" class="btn btn-block btn-lg btn-default">Regisztráció</a>
+            </div>
             @if($_SERVER['REMOTE_ADDR']=='192.168.0.1')
                 <div class="col-md-4">
                     <a href="{{ route('test') }}" class="btn btn-block btn-lg btn-default">TEST</a>

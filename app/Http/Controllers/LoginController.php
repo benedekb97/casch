@@ -124,4 +124,28 @@ class LoginController extends Controller
 
         return redirect()->back();
     }
+
+    public function register(Request $request)
+    {
+        if($request->input('email') && $request->input('password') && $request->input('name')){
+
+            if(User::where('email',$request->input('email')->count() > 0)) {
+                abort(400);
+            }
+
+            $user = new User();
+            $user->email = $request->input('email');
+            $user->password = bcrypt($request->input('password'));
+            $user->name = $request->input('name');
+            $user->internal_id  = 0;
+            $user->save();
+
+            Auth::login($user);
+
+            return redirect()->route('index');
+        }
+
+
+        return view('register');
+    }
 }
