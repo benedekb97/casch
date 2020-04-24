@@ -507,7 +507,7 @@ class GameController extends Controller
         $game->round->current_turn->winning_play_id = $play->id;
         $game->round->current_turn->save();
 
-        $time_left = strtotime($game->round->current_turn->updated_at)+max($game->players()->count()*3,10)-time();
+        $time_left = strtotime($game->round->current_turn->updated_at)+10-time();
 
         event(new TurnFinished([
             'id' => $play->id,
@@ -540,7 +540,7 @@ class GameController extends Controller
         }
 
         if($game->round->current_turn->winning_play!=null) {
-            $time_left = strtotime($game->round->current_turn->updated_at)+max($game->players()->count()*3,10)-time();
+            $time_left = strtotime($game->round->current_turn->updated_at)+10-time();
         }else{
             $time_left = time();
         }
