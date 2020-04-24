@@ -6,6 +6,7 @@ use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 use Session;
+use Str;
 
 class LoginController extends Controller
 {
@@ -137,7 +138,7 @@ class LoginController extends Controller
             $user->email = $request->input('email');
             $user->password = bcrypt($request->input('password'));
             $user->name = $request->input('name');
-            $user->internal_id  = 0;
+            $user->internal_id  = Str::random(30);
             $user->save();
 
             Auth::login($user);
