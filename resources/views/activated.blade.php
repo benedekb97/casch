@@ -20,6 +20,9 @@
                             <a href="{{ route('login') }}">Jelentkezz be!</a>
                         </p>
                     @endif
+                    <p>
+                        <a href="{{ route('help') }}">Segítség az oldal használatához</a>
+                    </p>
                 </div>
             </div>
         </div>

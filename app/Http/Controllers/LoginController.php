@@ -200,7 +200,7 @@ class LoginController extends Controller
 
                 Auth::login($user);
 
-                return redirect()->route('index');
+                return redirect()->route('activate');
             }
 
             $email = $request->input('email');

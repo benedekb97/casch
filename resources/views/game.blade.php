@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Game')
+@section('title', 'Új játék')
 
 @section('content')
     <input type="hidden" id="pusher" value="{{ env('PUSHER_APP_KEY') }}">

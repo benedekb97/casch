@@ -13,6 +13,8 @@ Route::get('activate', 'LoginController@activate')->name('activate')->middleware
 Route::get('activate/{code}', 'LoginController@activateCode')->name('activate.code');
 Route::get('activate_resend', 'LoginController@resend')->name('activate.resend')->middleware('auth');
 
+Route::get('help', 'SiteController@help')->name('help');
+
 Route::group(['middleware' => ['auth','activate']], function(){
     Route::group(['prefix' => 'cards', 'as' => 'cards.', 'middleware' => 'permissions:edit-cards'], function(){
         Route::get('', 'CardController@index')->name('index');

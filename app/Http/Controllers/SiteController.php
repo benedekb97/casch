@@ -51,4 +51,9 @@ class SiteController extends Controller
 
         return redirect()->route('index');
     }
+
+    public function help()
+    {
+        return view('help');
+    }
 }

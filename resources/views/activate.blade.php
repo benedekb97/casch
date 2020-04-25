@@ -5,7 +5,7 @@
 @section('content')
     <div class="row">
         <div class="col-md-6 offset-md-3">
-            <div class="card">
+            <div class="card" style="margin-bottom:15px;">
                 <div class="card-header">
                     <h4 class="card-title card-title-no-margin">Felhasználó aktiválása</h4>
                 </div>

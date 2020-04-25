@@ -4,29 +4,27 @@
 
 @section('content')
     <div class="row">
+        <div class="col-md-4">
+            <a href="{{ route('help') }}" class="btn btn-block btn-lg @auth btn-info @else btn-default @endauth" style="cursor:help">Segítség!</a>
+        </div>
         @auth
             <div class="col-md-4">
-                <a href="{{ route('logout') }}" class="btn btn-block btn-lg btn-default">Kijelentkezés</a>
+                <a href="{{ route('logout') }}" class="btn btn-block btn-lg btn-danger">Kijelentkezés</a>
             </div>
             @if(Auth::user()->player() == null)
                 @can('host')
                     <div class="col-md-4">
-                        <a href="{{ route('host') }}" class="btn btn-block btn-lg btn-default">Új játék</a>
+                        <a href="{{ route('host') }}" class="btn btn-block btn-lg btn-success">Új játék</a>
                     </div>
                 @endcan
             @else
                 <div class="col-md-4">
-                    <a href="{{ route('join', ['slug' => Auth::user()->game()->slug]) }}" class="btn btn-block btn-lg btn-default">Visszacsatlakozás</a>
+                    <a href="{{ route('join', ['slug' => Auth::user()->game()->slug]) }}" class="btn btn-block btn-lg btn-success"><b>Visszacsatlakozás</b></a>
                 </div>
             @endif
-            @can('edit-cards')
-                <div class="col-md-4">
-                    <a href="{{ route('cards.index') }}" class="btn btn-block btn-lg btn-default">Kártyák</a>
-                </div>
-            @endcan
             @group('admin')
                 <div class="col-md-4">
-                    <a href="{{ route('admin.index') }}" class="btn btn-block btn-lg btn-default">Admin</a>
+                    <a href="{{ route('admin.index') }}" class="btn btn-block btn-lg btn-warning">Admin</a>
                 </div>
             @endgroup
             <div class="col-md-4">
@@ -37,10 +35,10 @@
             </div>
         @else
             <div class="col-md-4">
-                <a href="{{ route('login') }}" class="btn btn-block btn-lg btn-default">Bejelentkezés</a>
+                <a href="{{ route('login') }}" class="btn btn-block btn-lg btn-success">Bejelentkezés</a>
             </div>
             <div class="col-md-4">
-                <a href="{{ route('register') }}" class="btn btn-block btn-lg btn-default">Regisztráció</a>
+                <a href="{{ route('register') }}" class="btn btn-block btn-lg btn-info">Regisztráció</a>
             </div>
             @if($_SERVER['REMOTE_ADDR']=='192.168.0.1')
                 <div class="col-md-4">
