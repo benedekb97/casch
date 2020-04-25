@@ -71,7 +71,7 @@
                     </div>
                     <div class="card-body">
                         <p style="padding-left:10px; margin-bottom:-10px;">
-                            Itt tudod beállítani a körök számát<br>
+                            Ezzel az opcióval tudod beállítani a körök számát<br>
                             Egy kör mindig annyi játszmából áll ahányan a játékban vagytok.<br>
                             <i>Tipp: Ha sokan vagytok 2-3-nál ne legyen több kör, mert hamar unalmassá válhat úgy a játék.</i>
                         </p>
@@ -81,7 +81,7 @@
                     </div>
                     <div class="card-body">
                         <p style="padding-left:10px; margin-bottom:-10px;">
-                            Itt tudod kiválasztani azt a paklit amiből a játék során kaptok kártyákat. Paklit a profilodban tudsz létrehozni, össze tudod fésülni más emberek pakliaival, illetve tudsz hozzáadni új kártyákat a paklidhoz.
+                            Ezzel az opcióval tudod kiválasztani azt a paklit amiből a játék során kaptok kártyákat. Paklit a profilodban tudsz létrehozni, össze tudod fésülni más emberek pakliaival, illetve tudsz hozzáadni új kártyákat a paklidhoz.
                         </p>
                     </div>
                 </div>
