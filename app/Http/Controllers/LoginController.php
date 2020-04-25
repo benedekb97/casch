@@ -142,10 +142,11 @@ class LoginController extends Controller
             ];
 
             if(Auth::attempt($credentials)) {
-                if(Session::has('game_slug')){
-                    $slug = Session::get('game_slug');
-
-                    Session::forget('game_slug');
+                if(Session::get('game_slug')!=='' || $user->player()!==null) {
+                    $slug = Session::get('game_slug') ?: $user->game()->slug;
+                    if(Session::has('game_slug')){
+                        Session::forget('game_slug');
+                    }
                     return redirect()->route('join', $slug);
                 }
 
@@ -186,6 +187,8 @@ class LoginController extends Controller
                 $user->name = $request->input('name');
                 $user->internal_id  = Str::random(30);
                 $user->save();
+
+                $user->assignGroup('default');
 
                 Auth::login($user);
 
