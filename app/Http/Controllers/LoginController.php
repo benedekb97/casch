@@ -185,6 +185,7 @@ class LoginController extends Controller
                 $user->email = $request->input('email');
                 $user->password = bcrypt($request->input('password1'));
                 $user->name = $request->input('name');
+                $user->nickname = $request->input('nickname');
                 $user->internal_id  = Str::random(30);
                 $user->save();
 
@@ -197,18 +198,21 @@ class LoginController extends Controller
 
             $email = $request->input('email');
             $name = $request->input('name');
+            $nickname = $request->input('nickname');
 
         }else{
             $email = null;
             $name = null;
             $error = null;
+            $nickname = null;
         }
 
 
         return view('register',[
             'email' => $email,
             'name' => $name,
-            'error' => $error
+            'error' => $error,
+            'nickname' => $nickname
         ]);
     }
 }

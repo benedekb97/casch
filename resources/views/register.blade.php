@@ -35,6 +35,14 @@
                         <div class="form-group">
                             <div class="input-group">
                                 <span class="input-group-prepend">
+                                    <label for="nickname" class="input-group-text">Becenév</label>
+                                </span>
+                                <input id="nickname" type="text" name="nickname" placeholder="Becenév" class="form-control" value="{{ $nickname }}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-prepend">
                                     <label for="password1" class="input-group-text">
                                         Jelszó<span style="color:red;font-style:italic;">*</span>
                                     </label>
