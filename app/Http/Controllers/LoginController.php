@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
+use Mail;
 use Session;
 use Str;
 
@@ -191,6 +192,12 @@ class LoginController extends Controller
 
                 $user->assignGroup('default');
 
+                Mail::send('email.register', ['user' => $user], function($m) use ($user){
+                    $m->from('cards.against.sch@gmail.com', 'Cards Against Schönherz');
+
+                    $m->to($user->email, $user->name)->subject('Aktiváld felhasználód!');
+                });
+
                 Auth::login($user);
 
                 return redirect()->route('index');
@@ -215,4 +222,51 @@ class LoginController extends Controller
             'nickname' => $nickname
         ]);
     }
+
+    public function activate($code = null)
+    {
+
+        return view('activate');
+    }
+
+    public function activateCode($code)
+    {
+        if($code) {
+            $user = User::where('internal_id', $code)->first();
+
+            if ($user) {
+                $user->activated = true;
+                $user->save();
+            }
+        }
+
+        return redirect()->route('index');
+
+    }
+
+    public function resend()
+    {
+        $user = Auth::user();
+        if(!$user)
+        {
+            return redirect()->route('login');
+        }
+
+        $last_email = $user->last_email_sent;
+
+
+        if(!$last_email || (time()-strtotime($last_email))>24*60*60) {
+            Mail::send('email.register', ['user' => $user], function($m) use ($user){
+                $m->from('cards.against.sch@gmail.com', 'Cards Against Schönherz');
+
+                $m->to($user->email, $user->name)->subject('Aktiváld felhasználód!');
+            });
+
+            $user->last_email_sent = date("Y-m-d H:i:s");
+            $user->save();
+        }
+
+        return redirect()->route('activate');
+    }
+
 }

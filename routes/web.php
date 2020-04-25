@@ -9,7 +9,11 @@ Route::get('logout', 'LoginController@logout')->name('logout');
 Route::get('test', 'LoginController@test')->name('test');
 Route::match(['get','post'], 'register','LoginController@register')->name('register');
 
-Route::group(['middleware' => 'auth'], function(){
+Route::get('activate', 'LoginController@activate')->name('activate')->middleware('auth');
+Route::get('activate/{code}', 'LoginController@activateCode')->name('activate.code');
+Route::get('activate_resend', 'LoginController@resend')->name('activate.resend')->middleware('auth');
+
+Route::group(['middleware' => ['auth','activate']], function(){
     Route::group(['prefix' => 'cards', 'as' => 'cards.', 'middleware' => 'permissions:edit-cards'], function(){
         Route::get('', 'CardController@index')->name('index');
 
