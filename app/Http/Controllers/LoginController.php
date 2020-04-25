@@ -240,7 +240,7 @@ class LoginController extends Controller
             }
         }
 
-        return redirect()->route('index');
+        return view('activated');
 
     }
 
