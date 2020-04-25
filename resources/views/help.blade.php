@@ -73,7 +73,7 @@
                         <p style="padding-left:10px; margin-bottom:-10px;">
                             Ezzel az opcióval tudod beállítani a körök számát<br>
                             Egy kör mindig annyi játszmából áll ahányan a játékban vagytok.<br>
-                            <i>Tipp: Ha sokan vagytok 2-3-nál ne legyen több kör, mert hamar unalmassá válhat úgy a játék.</i>
+                            <i>Tipp: Ha sokan vagytok 2-3-nál ne legyen több kör, mert egyébként hamar unalmassá válhat a játék.</i>
                         </p>
                     </div>
                     <div class="card-header" id="deck">
