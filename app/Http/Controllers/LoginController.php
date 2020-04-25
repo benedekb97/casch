@@ -142,7 +142,7 @@ class LoginController extends Controller
             ];
 
             if(Auth::attempt($credentials)) {
-                if(Session::get('game_slug')!=='' || $user->game()!==null) {
+                if(Session::has('game_slug') || $user->game()!=null) {
                     $slug = Session::get('game_slug') ? Session::get('game_slug') : $user->game()->slug;
                     if(Session::has('game_slug')){
                         Session::forget('game_slug');
