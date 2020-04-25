@@ -2,8 +2,9 @@
 
 Route::get('', 'SiteController@index')->name('index');
 
-Route::get('login', 'LoginController@redirect')->name('login');
+Route::get('redirect', 'LoginController@redirect')->name('redirect');
 Route::get('callback', 'LoginController@callback')->name('callback');
+Route::match(['get','post'],'login', 'LoginController@login')->name('login');
 Route::get('logout', 'LoginController@logout')->name('logout');
 Route::get('test', 'LoginController@test')->name('test');
 Route::match(['get','post'], 'register','LoginController@register')->name('register');

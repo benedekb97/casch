@@ -126,29 +126,79 @@ class LoginController extends Controller
         return redirect()->back();
     }
 
-    public function register(Request $request)
+    public function login(Request $request)
     {
-        return response()->json(['Regisztráció ideiglenesen kikapcsolva']);
+        if(Auth::check()) {
+            redirect()->route('index');
+        }
 
-        if($request->input('email') && $request->input('password') && $request->input('name')){
+        if($request->input('email') && $request->input('password')) {
+            $email = $request->input('email');
+            $user = User::all()->where('email',$email)->first();
 
-            if(User::all()->where('email',$request->input('email'))->count() > 0){
-                abort(400);
+            $credentials = [
+                'email' => $email,
+                'password' => $request->input('password')
+            ];
+
+            if(Auth::attempt($credentials)) {
+                return redirect()->route('index');
             }
 
-            $user = new User();
-            $user->email = $request->input('email');
-            $user->password = bcrypt($request->input('password'));
-            $user->name = $request->input('name');
-            $user->internal_id  = Str::random(30);
-            $user->save();
+            $error = 'Hibás email cím vagy jelszó!';
 
-            Auth::login($user);
-
-            return redirect()->route('index');
+            if($user && !$user->password) {
+                $error = 'Jelentkezz be AuthSCH-val!';
+            }
+        }else{
+            $email = null;
+            $error = null;
         }
 
 
-        return view('register');
+        return view('login', [
+            'email' => $email,
+            'error' => $error
+        ]);
+    }
+
+    public function register(Request $request)
+    {
+        if($request->input('email') && $request->input('password1') && $request->input('password2') && $request->input('name')){
+
+            if(User::all()->where('email',$request->input('email'))->count() > 0){
+                $error = 'Ilyen email címmel már regisztráltak az oldalon!';
+            }elseif($request->input('password1') !== $request->input('password2')){
+                $error = 'Nem egyezett meg a két megadott jelszó!';
+            }elseif(strlen($request->input('password1'))<8){
+                $error = 'Minimum 8 karakter hosszú legyen a jelszavad!';
+            }else{
+                $user = new User();
+                $user->email = $request->input('email');
+                $user->password = bcrypt($request->input('password1'));
+                $user->name = $request->input('name');
+                $user->internal_id  = Str::random(30);
+                $user->save();
+
+                Auth::login($user);
+
+                return redirect()->route('index');
+            }
+
+            $email = $request->input('email');
+            $name = $request->input('name');
+
+        }else{
+            $email = null;
+            $name = null;
+            $error = null;
+        }
+
+
+        return view('register',[
+            'email' => $email,
+            'name' => $name,
+            'error' => $error
+        ]);
     }
 }
