@@ -8,7 +8,6 @@ Route::match(['get','post'],'login', 'LoginController@login')->name('login');
 Route::get('logout', 'LoginController@logout')->name('logout');
 Route::get('test', 'LoginController@test')->name('test');
 Route::match(['get','post'], 'register','LoginController@register')->name('register');
-Route::get('login_real', 'LoginController@login_real')->name('login_real');
 
 Route::group(['middleware' => 'auth'], function(){
     Route::group(['prefix' => 'cards', 'as' => 'cards.', 'middleware' => 'permissions:edit-cards'], function(){

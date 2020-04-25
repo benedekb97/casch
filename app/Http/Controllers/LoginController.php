@@ -142,6 +142,13 @@ class LoginController extends Controller
             ];
 
             if(Auth::attempt($credentials)) {
+                if(Session::has('game_slug')){
+                    $slug = Session::get('game_slug');
+
+                    Session::forget('game_slug');
+                    return redirect()->route('join', $slug);
+                }
+
                 return redirect()->route('index');
             }
 
