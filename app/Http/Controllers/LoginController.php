@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Email;
 use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 use Mail;
 use Session;
 use Str;
+use View;
 
 class LoginController extends Controller
 {
@@ -192,11 +194,16 @@ class LoginController extends Controller
 
                 $user->assignGroup('default');
 
-                Mail::send('email.register', ['user' => $user], function($m) use ($user){
-                    $m->from('cards.against.sch@gmail.com', 'Cards Against Schönherz');
+                $email = new Email();
+                $email->to_email = $user->email;
+                $email->to_name = $user->name;
+                $email->from_email = 'cards.against.sch@gmail.com';
+                $email->from_name = 'Cards Against Schönherz';
+                $email->subject = 'Aktiváld felhasználód!';
+                $email->body = view('email.register', ['user' => $user])->render();
+                $email->save();
 
-                    $m->to($user->email, $user->name)->subject('Aktiváld felhasználód!');
-                });
+                $email->send();
 
                 Auth::login($user);
 
@@ -256,11 +263,16 @@ class LoginController extends Controller
 
 
         if(!$last_email || (time()-strtotime($last_email))>24*60*60) {
-            Mail::send('email.register', ['user' => $user], function($m) use ($user){
-                $m->from('cards.against.sch@gmail.com', 'Cards Against Schönherz');
+            $email = new Email();
+            $email->to_email = $user->email;
+            $email->to_name = $user->name;
+            $email->from_email = 'cards.against.sch@gmail.com';
+            $email->from_name = 'Cards Against Schönherz';
+            $email->subject = 'Aktiváld felhasználód!';
+            $email->body = view('email.register', ['user' => $user])->render();
+            $email->save();
 
-                $m->to($user->email, $user->name)->subject('Aktiváld felhasználód!');
-            });
+            $email->send();
 
             $user->last_email_sent = date("Y-m-d H:i:s");
             $user->save();

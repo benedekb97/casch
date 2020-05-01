@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Email;
 use App\Models\Play;
 use App\Models\BugReport;
+use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
+use Junges\ACL\Http\Models\Group;
 
 class SiteController extends Controller
 {
@@ -48,6 +51,21 @@ class SiteController extends Controller
         $report->trace = $trace;
         $report->user_id = Auth::id();
         $report->save();
+
+        $admins = Group::where('slug','admin')->first()->users;
+
+        foreach($admins as $admin) {
+            $email = new Email();
+            $email->to_email = $admin->email;
+            $email->to_name = $admin->name;
+            $email->from_email = 'cards.against.sch@gmail.com';
+            $email->from_name = 'Cards Against Schönherz';
+            $email->subject = 'Új hibajelentés - #' . $report->id;
+            $email->body = view('email.bug_report', ['report' => $report, 'user' => $admin])->render();
+            $email->save();
+
+            $email->send();
+        }
 
         return redirect()->route('index');
     }
