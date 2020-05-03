@@ -18,7 +18,7 @@ channel.bind('message', function(data){
         add_text += ` spectator`;
     }
 
-    add_text += `" data-toggle="tooltip" title="${sent_at}">${sent_by}: ${message}</span>`;
+    add_text += `" data-toggle="tooltip" data-placement="left" title="${sent_at}">${sent_by}: ${message}</span>`;
 
     messages.html(current_html + add_text);
 
@@ -27,6 +27,12 @@ channel.bind('message', function(data){
     });
 
     $('#chat-messages').animate({ scrollTop: $('#chat-messages').prop("scrollHeight")}, 500);
+
+    if(!show){
+        unread++;
+
+        $('#chat-title').html(`Chat&nbsp;&nbsp;<span style="border-radius:3px; background-color:red; color:white; padding:2px;">${unread}</span>`);
+    }
 });
 
 $(document).ready(function(){
@@ -52,7 +58,7 @@ $(document).ready(function(){
                 if(element.user_id == $('#user_id').val()){
                     html += ` player-message`;
                 }
-                html += `" data-toggle="tooltip" title="${element.sent_at}">${element.sent_by}: ${element.message}</span>`;
+                html += `" data-toggle="tooltip" data-placement="left" title="${element.sent_at}">${element.sent_by}: ${element.message}</span>`;
             });
 
             $('#chat-messages').html(html);
@@ -103,6 +109,7 @@ $('#chat-text').keypress(function(e){
 });
 
 let show = false;
+let unread = 0;
 
 $('#chat-title').on('click', function(){
     if(show){
@@ -112,6 +119,8 @@ $('#chat-title').on('click', function(){
     }else{
         $('#chat-box').animate({ bottom: '0'}, 250);
         $('#chat-title').css('background', 'rgba(255,255,255,0.15)');
+        unread = 0;
+        $('#chat-title').html('Chat');
         show = true;
     }
 });
