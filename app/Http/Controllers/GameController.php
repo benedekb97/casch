@@ -7,6 +7,7 @@ use App\Events\EditGame;
 use App\Events\JoinGame;
 use App\Events\LeaveGame;
 use App\Events\LikePlay;
+use App\Events\Message;
 use App\Events\NewTurn;
 use App\Events\PlayerReady;
 use App\Events\StartGame;
@@ -817,9 +818,154 @@ class GameController extends Controller
         }
 
         if($game->round->current_turn->everyonePlayed()){
+            foreach($game->players as $player) {
+                $player->voted = 0;
+                $player->votes = 0;
+                $player->save();
+            }
+
             event(new TurnPlaysFinished(['host_id' => $game->round->current_turn->host->user->id, 'recap_url' => route('game.turn.recap', ['game' => $game])], $game->slug));
         }
 
         return redirect()->route('index');
+    }
+
+    public function voteKick(Request $request, $slug)
+    {
+        $game = Game::where('slug', $slug)->first();
+
+        if(null === $game) {
+            return response()->json(['success' => false]);
+        }
+
+        if(Auth::user()->game() === null || Auth::user()->game()->id !== $game->id) {
+            return response()->json(['success' => false]);
+        }
+
+        if(Auth::user()->player()->voted){
+            return response()->json(['success' => false]);
+        }
+
+        if($request->input('player_id') == Auth::user()->player()->id) {
+            return response()->json(['success' => false]);
+        }
+
+        $player_id = $request->input('player_id');
+        $player = Player::find($player_id);
+
+        if(null === $player) {
+            return response()->json(['success' => false]);
+        }
+
+        if($game->round->current_turn->player_id === $player->id && $game->round->current_turn->plays()->count() !== $game->players()->count()-1) {
+            return response()->json(['success' => false]);
+        }
+
+        if($player->plays->last() !== null && $player->plays->last()->turn_id === $game->round->current_turn->id) {
+            abort(401);
+        }
+
+        $user = $player->user;
+
+        $players = $game->players()->count();
+
+        ++$player->votes;
+        $player->save();
+
+        if($player->votes >= ceil($players/2)){
+            $player->cards()->detach();
+            $player_name = $player->user->nickname ?: $player->user->name;
+            event(new LeaveGame($player->user->id, $game->slug));
+            event(new Message($slug, [
+                'sent_by' => 'VoteKick',
+                'message' => $player_name . ' ki lett baszarintva!',
+                'sent_at' => date('H:i'),
+                'spectator' => false,
+                'user_id' => 0
+            ]));
+
+            if($game->round->current_turn->player_id === $player->id) {
+                $winning_play = $game->round->current_turn->plays->random();
+
+                $game->round->current_turn->winning_play_id = $winning_play->id;
+                $game->round->current_turn->save();
+
+                $winning_play->points = $game->players()->count();
+                $winning_play->save();
+
+                $play_text = "";
+
+
+                $black_card = $game->round->current_turn->card;
+                foreach(json_decode($black_card->text) as $key => $text) {
+                    $play_text .= $text;
+                    if(isset($winning_play->cards()->get()->toArray()[$key])) {
+                        $play_text .= "<span class='white-text'>".implode('', json_decode($winning_play->cards()->get()->toArray()[$key]['text'], true))."</span>";
+                    }
+                }
+
+
+                $time_left = strtotime($game->round->current_turn->updated_at)+10-time();
+
+                event(new TurnFinished([
+                    'id' => $winning_play->id,
+                    'text' => $play_text,
+                    'player_id' => $winning_play->player->user->id,
+                    'name' => $winning_play->player->user->name,
+                    'winner_points' => $winning_play->player->score(),
+                    'ready' => Auth::user()->player()->ready,
+                    'time_left' => $time_left,
+                    'recap_url' => route('game.turn.recap', ['game' => $game])
+                ], $game->slug));
+
+
+            }
+
+            $player->delete();
+
+            if($game->host_user_id === $user->id) {
+                $next_host = $game->players->first();
+
+                $game->host_user_id = $next_host->user->id;
+                $game->save();
+            }
+
+            if($game->players()->count() < 2) {
+                $rounds = $game->rounds;
+                foreach($rounds as $round) {
+                    $round->turns()->delete();
+                }
+                foreach($game->players as $player) {
+                    $player->plays()->delete();
+                    $player->cards()->detach();
+                }
+                $game->players()->delete();
+                $game->rounds()->delete();
+                $game->delete();
+
+                event(new FinishedGame(route('game.finished', ['slug' => $game->slug]), $game->slug));
+            }
+
+            foreach($game->players as $player) {
+                $player->voted = 0;
+                $player->save();
+            }
+
+        }else{
+            $player_name = $player->user->nickname ?: $player->user->name;
+
+            event(new Message($slug, [
+                'sent_by' => 'VoteKick',
+                'message' => $player_name . ' (' . $player->votes . '/' . ceil($players/2) . ')',
+                'sent_at' => date('H:i'),
+                'spectator' => false,
+                'user_id' => 0
+            ]));
+
+            Auth::user()->player()->voted = true;
+            Auth::user()->player()->save();
+        }
+
+        return response()->json(['success' => true]);
     }
 }

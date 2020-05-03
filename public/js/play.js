@@ -157,6 +157,8 @@ let pusher = new Pusher($('#pusher').val(), {
     forceTLS: true
 });
 
+Pusher.logToConsole = true;
+
 let slug = $('#slug').val();
 
 let channel = pusher.subscribe('game-' + slug);
@@ -192,6 +194,11 @@ channel.bind('finished-game', function(data){
 });
 
 channel.bind('leave-game', function(data){
+
+    if(data.message == $('#user_id').val()){
+        window.location = $('#site-index').val();
+    }
+
     $('#player-' + data.message).css('display','none');
     $('#player-score-' + data.message).css('display','none');
 });
@@ -200,4 +207,27 @@ channel.bind('new-cards', function(data) {
     if($('#user_id').val() == data.message) {
         location.reload();
     }
+});
+
+$('#votekick').on('click', function(){
+    let player_id = $('#kick-player').val();
+
+    $.ajax({
+        url: $('#vote-kick-url').val(),
+        type: "POST",
+        dataType: "json",
+        data: {
+            _token: $('#_token').val(),
+            player_id: player_id
+        },
+        success: function(e){
+            $('#vote-kick-button').css('display','none');
+            $('#kick-modal').html('');
+        },
+        error: function(e){
+            console.log(e);
+        }
+    });
+
+    $('#kick-modal').modal('toggle');
 });

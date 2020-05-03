@@ -56,6 +56,8 @@ Route::group(['middleware' => ['auth','activate']], function(){
 
         Route::post('{slug}/lobby/ready', 'GameController@readyLobbyToggle')->name('lobby.ready');
 
+        Route::post('{slug}/votekick', 'GameController@voteKick')->name('vote_kick');
+
         Route::group(['prefix' => 'chat', 'as' => 'chat.'], function(){
             Route::post('{slug}/send', 'ChatController@send')->name('send');
             Route::post('{slug}', 'ChatController@get')->name('get');

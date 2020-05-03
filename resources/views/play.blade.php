@@ -33,6 +33,15 @@
                     </a>
                 </div>
             @endif
+            @if(!Auth::user()->player()->voted)
+                <div class="card" id="vote-kick-button" style="margin-bottom:15px;">
+                    <a href="#" class="btn btn-default btn-block" id="vote-kick-link" data-toggle="modal" data-target="#kick-modal">
+                        <div class="card-body" style="font-size:15pt">
+                            Játékos kirugása <i class="fa fa-head-side-cough-slash"></i>
+                        </div>
+                    </a>
+                </div>
+            @endif
             <div class="card" id="submit-button" style="display:none; margin-bottom:15px;">
                 <a href="#" class="btn btn-primary btn-block" id="submit-link">
                     <div class="card-body" style="font-size:15pt;">
@@ -58,6 +67,7 @@
             <div class="row" id="white-cards"></div>
         </div>
     </div>
+    <input type="hidden" id="site-index" value="{{ route('index') }}">
     @include('chat')
 @endsection
 
@@ -67,6 +77,45 @@
 @endpush
 
 @push('modals')
+    @if(!Auth::user()->player()->voted)
+        <input type="hidden" id="vote-kick-url" value="{{ route('game.vote_kick', ['slug' => $game->slug]) }}">
+        <div class="modal fade" id="kick-modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Játékos kirugása</h4>
+                        <button class="close" data-dismiss="modal" type="button">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Egyszerre csak egy játékosra szavazhatsz! Ha ki is lesz baszva a körben akkor újra szavazhatsz. Ha nem, a következő körben szavazhatsz újra</p>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <label for="kick-player" class="input-group-text">Játékos</label>
+                                </div>
+                                <select id="kick-player" class="form-control">
+                                    <option selected disabled>Válassz egyet!</option>
+                                    @foreach(Auth::user()->game()->players as $player)
+                                        @if(Auth::user()->player()->id !== $player->id && $game->round->current_turn->player_id !== $player->id)
+                                            <option value="{{ $player->id }}">{{ $player->user->nickname ?: $player->user->name }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="votekick">
+                            Szavazás <i class="fa fa-check"></i>
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            Mégse <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
     <div class="modal fade" id="waiting-for-host">
         <div class="modal-dialog" style="padding:0; margin:0;">
             <div class="modal-content" style="background:rgba(0,0,0,0.5); width:100vw; height:100vh;">

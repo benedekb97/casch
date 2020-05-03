@@ -32,7 +32,29 @@
             </div>
         @endforeach
     </div>
+    <input type="hidden" id="site-index" value="{{ route('index') }}">
+    <input type="hidden" id="user_id" value="{{ Auth::id() }}">
 @endsection
+
+@push('scripts')
+    <script>
+
+        let pusher = new Pusher($('#pusher').val(), {
+            cluster: 'eu',
+            forceTLS: true
+        });
+
+        let slug = $('#slug').val();
+        let channel = pusher.subscribe('game-' + slug);
+
+        channel.bind('leave-game', function(data){
+
+            if(data.message == $('#user_id').val()){
+                window.location = $('#site-index').val();
+            }
+        });
+    </script>
+@endpush
 
 @push('modals')
     @foreach($plays as $play)
