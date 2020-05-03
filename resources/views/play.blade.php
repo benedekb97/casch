@@ -23,38 +23,32 @@
             <div class="card" style="margin-bottom:15px;">
                 <div class="card-header">Kör: {{ $game->round->number }}/{{ $game->number_of_rounds }}<br>Játék: {{ $game->round->turns()->count() }}/{{ $game->players()->count() }}</div>
                 <div class="card-body" id="players"></div>
-            </div>
-            @if($game->round->current_turn->host->user->id !== Auth::id())
-                <div class="card" style="margin-bottom:15px;">
-                    <a href="#" class="btn btn-default btn-block" data-toggle="modal" data-target="#leave-game">
-                        <div class="card-body" style="font-size:15pt">
-                            Kilépés <i class="fa fa-door-open"></i>
-                        </div>
-                    </a>
+                <div class="card-footer">
+                    @if($game->round->current_turn->host->user->id !== Auth::id())
+                        <span>
+                            <a style="margin-bottom:10px;" href="#" class="btn btn-default" data-toggle="modal" data-target="#leave-game">
+                                Kilépés <i class="fa fa-door-open"></i>
+                            </a>
+                        </span>
+                    @endif
+                    @if(!Auth::user()->player()->voted)
+                        <span id="vote-kick-button" style="margin-bottom:10px;">
+                            <a style="margin-bottom:10px;" href="#" class="btn btn-default" id="vote-kick-link" data-toggle="modal" data-target="#kick-modal">
+                                Játékos kirugása <i class="fa fa-head-side-cough-slash"></i>
+                            </a>
+                        </span>
+                    @endif
+                    <span id="submit-button" style="display:none; margin-bottom:10px;">
+                        <a style="margin-bottom:10px;" href="#" class="btn btn-primary" id="submit-link">
+                            Mentés <i class="fa fa-save"></i>
+                        </a>
+                    </span>
+                    <span id="reset-button" style="display:none; margin-bottom:10px;">
+                        <a style="margin-bottom:10px;" href="#" class="btn btn-warning">
+                            Visszaállítás <i class="fa fa-refresh"></i>
+                        </a>
+                    </span>
                 </div>
-            @endif
-            @if(!Auth::user()->player()->voted)
-                <div class="card" id="vote-kick-button" style="margin-bottom:15px;">
-                    <a href="#" class="btn btn-default btn-block" id="vote-kick-link" data-toggle="modal" data-target="#kick-modal">
-                        <div class="card-body" style="font-size:15pt">
-                            Játékos kirugása <i class="fa fa-head-side-cough-slash"></i>
-                        </div>
-                    </a>
-                </div>
-            @endif
-            <div class="card" id="submit-button" style="display:none; margin-bottom:15px;">
-                <a href="#" class="btn btn-primary btn-block" id="submit-link">
-                    <div class="card-body" style="font-size:15pt;">
-                        Mentés <i class="fa fa-save"></i>
-                    </div>
-                </a>
-            </div>
-            <div class="card" id="reset-button" style="display:none;">
-                <a href="#" class="btn btn-warning btn-block">
-                    <div class="card-body" style="font-size:15pt">
-                        Visszaállítás <i class="fa fa-refresh"></i>
-                    </div>
-                </a>
             </div>
         </div>
         <div class="col-md-8">

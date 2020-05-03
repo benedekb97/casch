@@ -142,14 +142,14 @@ function addAnswer(card_id, card_text) {
     $('#answers_given').val(answers_given);
 
     if(answers_given == cards_needed) {
-        $('#submit-button').css('display','block');
+        $('#submit-button').css('display','inline');
     }
 
     $('#white-card-' + card_id).html(
         `<div class="card card-white"><div class="card-body" style="background-color:rgba(255,255,255,0.3);"><p>${card_text}</p></div></div>`
     );
 
-    reset_button_div.css('display','block');
+    reset_button_div.css('display','inline');
 }
 
 let pusher = new Pusher($('#pusher').val(), {

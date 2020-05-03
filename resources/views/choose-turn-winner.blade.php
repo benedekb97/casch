@@ -38,7 +38,6 @@
 
 @push('scripts')
     <script>
-
         let pusher = new Pusher($('#pusher').val(), {
             cluster: 'eu',
             forceTLS: true
