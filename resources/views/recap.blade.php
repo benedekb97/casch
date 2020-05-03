@@ -84,6 +84,8 @@
         </div>
     </div>
     <input type="hidden" id="like_url" value="{{ route('game.like', ['game' => $game]) }}">
+    <input type="hidden" id="user_id" value="{{ Auth::id() }}">
+    @include('chat')
 @endsection
 
 
@@ -244,4 +246,5 @@
             }, (time_left+1)*1000);
         @endif
     </script>
+    <script src="{{ asset('js/chat.js') }}"></script>
 @endpush

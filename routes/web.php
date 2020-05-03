@@ -55,6 +55,11 @@ Route::group(['middleware' => ['auth','activate']], function(){
         Route::get('{slug}', 'GameController@play')->name('play');
 
         Route::post('{slug}/lobby/ready', 'GameController@readyLobbyToggle')->name('lobby.ready');
+
+        Route::group(['prefix' => 'chat', 'as' => 'chat.'], function(){
+            Route::post('{slug}/send', 'ChatController@send')->name('send');
+            Route::post('{slug}', 'ChatController@get')->name('get');
+        });
     });
 
     Route::group(['prefix' => 'plays', 'as' => 'plays.'], function(){

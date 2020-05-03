@@ -258,3 +258,46 @@ ul.nav{
 .table tr:last-child td:last-child, .table tr:last-child th:last-child{
     border-bottom-right-radius:3px;
 }
+
+
+.chat-box {
+    position:fixed;
+    bottom:-250px;
+    width:400px;
+    max-width: 100%;
+    margin:0;
+    background:black;
+    z-index:1000;
+}
+
+.chat-box .chat-title{
+    width:100%;
+    background:rgba(255,255,255,0.05);
+    padding:10px;
+    border-top-left-radius:5px;
+    border-top-right-radius:5px;
+    cursor:pointer;
+}
+
+.chat-box .chat-form{
+    padding:5px;
+    background:rgba(255,255,255,0.1);
+}
+
+.chat-box .chat-messages{
+    padding:5px;
+    height:200px;
+    overflow-x:hidden;
+    overflow-y:auto;
+}
+
+.chat-box .chat-messages .chat-message{
+    display:block;
+    border-radius:5px;
+    padding:2px;
+    margin-bottom:2px;
+}
+
+.chat-box .chat-messages .player-message{
+    background:#0084ff;
+}

@@ -138,7 +138,7 @@ class Game extends Model
             if(!$hosts_so_far->find($player->id)) {
                 $new_round = false;
             }
-            
+
             if($this->round->current_turn->player_id == $player->id){
                 continue;
             }
@@ -256,5 +256,10 @@ class Game extends Model
     public function deck()
     {
         return $this->belongsTo(Deck::class, 'deck_id');
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
     }
 }

@@ -103,6 +103,7 @@
     <input type="hidden" id="game_url" value="{{ route('game.play', ['slug' => $game->slug]) }}">
     <input type="hidden" id="_token" value="{{ csrf_token() }}">
     <input type="hidden" id="ready_url" value="{{ route('game.lobby.ready', ['slug' => $game->slug]) }}">
+    @include('chat')
 @endsection
 
 @push('modals')
@@ -136,4 +137,6 @@
         },1000);
     </script>
     <script src="{{ asset('js/game.js') }}"></script>
+    <script src="{{ asset('js/chat.js') }}"></script>
+
 @endpush

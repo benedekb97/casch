@@ -58,10 +58,12 @@
             <div class="row" id="white-cards"></div>
         </div>
     </div>
+    @include('chat')
 @endsection
 
 @push('scripts')
     <script src="{{ asset('js/play.js') }}"></script>
+    <script src="{{ asset('js/chat.js') }}"></script>
 @endpush
 
 @push('modals')
