@@ -15,7 +15,8 @@
         @yield('content')
         <div class="row justify-content-center">
             <div class="col-md-3" style="text-align:center;">
-                <a href="{{ route('disclaimer') }}">Dis<b><i><u>c</u></i></b>laimer</a> @auth | <a href="{{ route('report') }}">Hibajelentés</a> @endauth | <a target="_blank" href="{{ route('help') }}">Segítség</a>
+                <a href="{{ route('disclaimer') }}">Dis<b><i><u>c</u></i></b>laimer</a> @auth | <a href="{{ route('report') }}">Hibajelentés</a> @endauth | <a target="_blank" href="{{ route('help') }}">Segítség</a><br>
+                <span data-toggle="tooltip" title="Updated 2020-05-03">Version 0.5</span>
             </div>
         </div>
     </div>
