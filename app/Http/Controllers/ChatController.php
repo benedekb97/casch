@@ -20,7 +20,7 @@ class ChatController extends Controller
         $message = new Message();
         $message->user_id = Auth::id();
         $message->game_id = $game->id;
-        $message->message = $request->input('message');
+        $message->message = strip_tags($request->input('message'));
         $message->save();
 
         event(new \App\Events\Message($game->slug, [
