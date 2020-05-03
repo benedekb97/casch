@@ -45,7 +45,7 @@
                     </span>
                     <span id="reset-button" style="display:none; margin-bottom:10px;">
                         <a style="margin-bottom:10px;" href="#" class="btn btn-warning">
-                            Visszaállítás <i class="fa fa-refresh"></i>
+                            Visszaállítás <i class="fa fa-undo"></i>
                         </a>
                     </span>
                 </div>
