@@ -196,6 +196,7 @@ class Game extends Model
         foreach($this->players as $player)
         {
             $player->voted = 0;
+            $player->votes = 0;
             $player->save();
         }
     }
