@@ -26,7 +26,7 @@ class DeckController extends Controller
             abort(403);
         }
 
-        $deck->name = $request->input('name');
+        $deck->name = strip_tags($request->input('name'));
         $deck->public = $request->input('public') ? 1 : 0;
         $deck->user_id = Auth::id();
         $deck->save();
