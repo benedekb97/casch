@@ -25,7 +25,7 @@ class ChatController extends Controller
 
         event(new \App\Events\Message($game->slug, [
             'sent_by' => Auth::user()->nickname ?: Auth::user()->name,
-            'message' => $request->input('message'),
+            'message' => strip_tags($request->input('message')),
             'sent_at' => date('H:i'),
             'spectator' => Auth::user()->game()->id != $game->id,
             'user_id' => Auth::id()
