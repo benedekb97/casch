@@ -80,3 +80,30 @@
     </div>
     @endauth
 @endsection
+
+@push('modals')
+    @if($butthurt)
+        <div class="modal fade" id="front-message">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Hey!</h4>
+                        <button class="close" type="button" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Jelezték páran, hogy találtak olyan kártyát, vagy kártyák kombinációját ami számukra sértő.</p>
+                        <p>A <a href="{{ route('disclaimer') }}">discalimer</a>-ben sok minden le van írva, köztük az is, hogy ezeken nem éri meg megsértődni, mert faszságok.</p>
+                        <p>Ha ennek ellenére úgy érzed, hogy valami konkrétan ellened irányult, tudod jelezni felénk <a href="{{ route('complaint') }}">ezen a linken</a>.</p>
+                        <p>További szép napokat és jó játékot!</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Bezárás</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $('#front-message').modal('toggle');
+        </script>
+    @endif
+@endpush

@@ -20,8 +20,18 @@ class SiteController extends Controller
             $plays = $plays->random(9)->shuffle();
         }
 
+        if(Auth::check()) {
+            $butthurt = Auth::user()->message_seen === 0;
+
+            Auth::user()->message_seen = 1;
+            Auth::user()->save();
+        }else{
+            $butthurt = false;
+        }
+
         return view('index',[
-            'featured_plays' => $plays
+            'featured_plays' => $plays,
+            'butthurt' => $butthurt
         ]);
     }
 

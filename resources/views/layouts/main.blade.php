@@ -14,8 +14,8 @@
         <h1 class="page-header"><a style="text-decoration:none; color:white;" href="{{ route('index') }}">Cards Against <span class="sch">Schönherz</span></a></h1>
         @yield('content')
         <div class="row justify-content-center">
-            <div class="col-md-3" style="text-align:center;">
-                <a href="{{ route('disclaimer') }}">Dis<b><i><u>c</u></i></b>laimer</a> @auth | <a href="{{ route('report') }}">Hibajelentés</a> @endauth | <a target="_blank" href="{{ route('help') }}">Segítség</a><br>
+            <div class="col-md-12" style="text-align:center;">
+                <a href="{{ route('disclaimer') }}">Dis<b><i><u>c</u></i></b>laimer</a> @auth | <a href="{{ route('report') }}">Hibajelentés</a> @endauth | <a target="_blank" href="{{ route('help') }}">Segítség</a>@auth | <a target="_blank" href="{{ route('complaint') }}">Kártya jelentése</a> @endauth<br>
                 <span data-toggle="tooltip" title="Updated 2020-05-03">Version 0.5</span>
             </div>
         </div>

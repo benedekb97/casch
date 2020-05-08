@@ -26,6 +26,8 @@ Route::group(['middleware' => ['auth','activate']], function(){
         Route::get('delete/{card}', 'CardController@delete')->name('delete');
     });
 
+    Route::match(['get','post'], 'complaint', 'ButtHurtController@butthurt')->name('complaint');
+
     Route::get('host', 'GameController@host')->name('host')->middleware('permissions:host');
     Route::get('leave/{slug?}', 'GameController@leave')->name('leave');
 
