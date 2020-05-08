@@ -57,7 +57,7 @@
         <div class="col-md-4" style="margin-bottom:15px;">
             <div class="card">
                  <div class="card-header">
-                     <h4 class="card-title card-title-no-margin">Oldal statisztikák</h4>
+                     <h4 class="card-title card-title-no-margin">Random statisztikák</h4>
                  </div>
                 <div class="card-body">
                     <div class="table-responsive">
