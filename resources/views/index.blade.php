@@ -54,29 +54,67 @@
     </div>
     @auth
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-4" style="margin-bottom:15px;">
+            <div class="card">
+                 <div class="card-header">
+                     <h4 class="card-title card-title-no-margin">Oldal statisztikák</h4>
+                 </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <tr>
+                                <th>Játékok száma</th>
+                                <td>{{ number_format($games_count,0, ',', ' ') }} db</td>
+                            </tr>
+                            <tr>
+                                <th>Játékosok száma</th>
+                                <td>{{ number_format($players_count,0, ',', ' ') }} db</td>
+                            </tr>
+                            <tr>
+                                <th>Kombinációk száma</th>
+                                <td>{{ number_format($plays_count,0, ',', ' ') }} db</td>
+                            </tr>
+                            <tr>
+                                <th>Játékok ma</th>
+                                <td>{{ $games_today }} db</td>
+                            </tr>
+                            <tr>
+                                <th rowspan="2" style="vertical-align: middle">Leggyakoribb kártya</th>
+                                <td>{{ $most_played_card->getTextWhite() }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ number_format($most_played,0, ',', ' ') }}-szer</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
             <div class="card" style="margin-bottom:15px;">
                 <div class="card-header">
                     <h4 class="card-title"><b>Kiemelkedő minőségű kártyák</b></h4>
                 </div>
             </div>
-        </div>
-        @foreach($featured_plays as $play)
-            <div class="col-md-4">
-                @if(in_array(Auth::id(),$play->getUsers()))
-                    <a class="card-link-black" href="{{ route('game.finished', ['slug' => $play->getGame()->slug]) }}">
-                @endif
-                    <div class="card" id="black-card">
-                        <div class="card-body">
-                            <h5 class="card-title">{!! $play->getTextHTML() !!}</h5>
-                            <p style="text-align:right; font-size:10pt;">{{ $play->getPlayer()->user->nickname ? $play->getPlayer()->user->nickname : $play->getPlayer()->user->name }}</p>
-                        </div>
+            <div class="row">
+                @foreach($featured_plays as $play)
+                    <div class="col-md-4">
+                        @if(in_array(Auth::id(),$play->getUsers()))
+                            <a class="card-link-black" href="{{ route('game.finished', ['slug' => $play->getGame()->slug]) }}">
+                                @endif
+                                <div class="card" id="black-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{!! $play->getTextHTML() !!}</h5>
+                                        <p style="text-align:right; font-size:10pt;">{{ $play->getPlayer()->user->nickname ? $play->getPlayer()->user->nickname : $play->getPlayer()->user->name }}</p>
+                                    </div>
+                                </div>
+                                @if(in_array(Auth::id(),$play->getUsers()))
+                            </a>
+                        @endif
                     </div>
-                @if(in_array(Auth::id(),$play->getUsers()))
-                    </a>
-                @endif
+                @endforeach
             </div>
-        @endforeach
+        </div>
     </div>
     @endauth
 @endsection
