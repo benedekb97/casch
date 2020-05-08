@@ -30,7 +30,7 @@ class UserController extends Controller
     {
         $user = User::find(Auth::id());
 
-        $user->nickname = $request->input('nickname');
+        $user->nickname = strip_tags($request->input('nickname'));
         $user->save();
 
         return redirect()->route('user.profile');

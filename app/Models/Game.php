@@ -192,7 +192,13 @@ class Game extends Model
             $this->finished = true;
             $this->save();
         }
-
+        
+        foreach($this->players as $player)
+        {
+            $player->voted = 0;
+            $player->votes = 0;
+            $player->save();
+        }
     }
 
     public function getPlayers()
