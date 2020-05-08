@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-6 offset-3" style="margin-bottom:15px;">
+        <div class="col-md-6 offset-md-3" style="margin-bottom:15px;">
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title card-title-no-margin">Kártya jelentése</h4>
