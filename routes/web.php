@@ -15,6 +15,17 @@ Route::get('activate_resend', 'LoginController@resend')->name('activate.resend')
 
 Route::get('help', 'SiteController@help')->name('help');
 
+Route::group([
+    'prefix' => 'angus/egy/kuki/mert/szereti/a/nunit',
+    'as' => 'angus.'
+], static function(){
+    Route::get('', 'AngusController@list')->name('index');
+
+    Route::post('response', 'AngusController@setResponse')->name('response');
+    Route::post('send', 'AngusController@receive')->name('receive');
+    Route::get('empty', 'AngusController@setEmpty')->name('empty');
+});
+
 Route::group(['middleware' => ['auth','activate']], function(){
     Route::group(['prefix' => 'cards', 'as' => 'cards.', 'middleware' => 'permissions:edit-cards'], function(){
         Route::get('', 'CardController@index')->name('index');
