@@ -97,4 +97,37 @@ class GameController extends Controller
             'pages' => $pages
         ]);
     }
+
+    public function endAll()
+    {
+        $games = Game::all();
+
+        foreach ($games as $game) {
+            if($game == null) {
+                continue;
+            }
+
+            $players = $game->getPlayers();
+            foreach($players as $player){
+                $player->cards()->detach();
+                $player->plays()->delete();
+
+                $player->delete();
+            }
+
+            $rounds = $game->rounds;
+            foreach($rounds as $round){
+                $round->turns()->delete();
+                $round->delete();
+            }
+
+            $game->finished = 1;
+            $game->save();
+            $game->delete();
+
+            event(new FinishedGame(route('game.finished', ['slug' => $game->slug]), $game->slug));
+        }
+
+        return redirect()->back();
+    }
 }

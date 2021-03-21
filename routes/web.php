@@ -141,6 +141,8 @@ Route::group(['middleware' => ['auth','activate']], function(){
             Route::get('{game}/delete', 'GameController@delete')->name('delete');
             Route::get('{game}/plays/{page?}', 'GameController@plays')->name('plays');
             Route::get('{game}/players', 'GameController@players')->name('players');
+
+            Route::get('end-all', 'GameController@endAll')->name('endAll');
         });
 
         Route::group([
