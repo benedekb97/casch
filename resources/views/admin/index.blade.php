@@ -19,12 +19,12 @@
                     <a class="card-link-black" href="{{ route('admin.games.view', ['game' => $game]) }}">
                         <div class="card-body">
                             <h6 class="card-title"><i>{{ $game->created_at }}</i></h6>
-                            <p style="margin-bottom:0;">{{ $game->players()->count() }} játékos</p>
-                            @if($game->rounds()->count() == 0)
+                            <p style="margin-bottom:0;">{{ $game->players() !== null ? $game->players()->count() : 0 }} játékos</p>
+                            @if($game->rounds() !== null && $game->rounds()->count() == 0)
                                 <p style="margin-bottom:0;">Még nem kezdődött el</p>
                             @else
-                                <p style="margin-bottom:0">Kör: {{ $game->rounds()->count() }}/{{ $game->number_of_rounds }}</p>
-                                <p style="margin-bottom:0">Játék: {{ $game->round->turns()->count() }}/{{ $game->players()->count() }}</p>
+                                <p style="margin-bottom:0">Kör: {{ $game->rounds() !== null ? $game->rounds()->count() : 0 }}/{{ $game->number_of_rounds }}</p>
+                                <p style="margin-bottom:0">Játék: {{ $game->round !== null && $game->round->turns() !== null ? $game->round->turns()->count() : 0 }}/{{ $game->players() !== null ? $game->players()->count() : 0 }}</p>
                             @endif
                         </div>
                     </a>
