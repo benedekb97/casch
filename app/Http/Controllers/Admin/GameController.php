@@ -101,6 +101,7 @@ class GameController extends Controller
     public function endAll()
     {
         abort(404);
+        die();
 
         $games = Game::all();
 
