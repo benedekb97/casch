@@ -190,6 +190,7 @@ class LoginController extends Controller
                 $user->name = $request->input('name');
                 $user->nickname = $request->input('nickname');
                 $user->internal_id  = Str::random(30);
+                $user->activated = true;
                 $user->save();
 
                 $user->assignGroup('default');
@@ -203,11 +204,11 @@ class LoginController extends Controller
                 $email->body = view('email.register', ['user' => $user])->render();
                 $email->save();
 
-                $email->send();
+//                $email->send();
 
                 Auth::login($user);
 
-                return redirect()->route('activate');
+                return redirect()->route('index');
             }
 
             $email = $request->input('email');
