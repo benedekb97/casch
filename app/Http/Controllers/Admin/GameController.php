@@ -100,6 +100,8 @@ class GameController extends Controller
 
     public function endAll()
     {
+        abort(404);
+
         $games = Game::all();
 
         foreach ($games as $game) {

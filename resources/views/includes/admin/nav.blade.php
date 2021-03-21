@@ -10,9 +10,9 @@
             <li class="nav-item">
                 <a href="{{ route('admin.games.index') }}" class="nav-link @yield('admin.games.active')">Játékok</a>
             </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.games.endAll') }}" class="nav-link bg-danger text-white">Összes játék befejezése</a>
-            </li>
+{{--            <li class="nav-item">--}}
+{{--                <a href="{{ route('admin.games.endAll') }}" class="nav-link bg-danger text-white">Összes játék befejezése</a>--}}
+{{--            </li>--}}
         </ul>
     </div>
 </div>
