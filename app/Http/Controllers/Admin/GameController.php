@@ -100,10 +100,8 @@ class GameController extends Controller
 
     public function endAll()
     {
-        abort(404);
-        die();
-
-        $games = Game::all();
+//        $games = Game::all();
+        $games = [];
 
         foreach ($games as $game) {
             if($game == null) {
